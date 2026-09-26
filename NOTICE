@@ -1,0 +1,26 @@
+Third-party notices
+===================
+
+This project is MIT-licensed, Copyright (c) 2026 Greg Faletto; LICENSE carries the
+permission notice. This file carries the copyright notices for incorporated third-party
+material. That material is under the same MIT terms, so LICENSE's permission notice covers
+it and is not reproduced again here.
+
+
+openai/openai-cookbook -- Copyright (c) 2025 OpenAI, MIT
+--------------------------------------------------------
+
+`references/execplan.md` is derived from `articles/codex_exec_plans.md`:
+
+    https://github.com/openai/openai-cookbook/blob/main/articles/codex_exec_plans.md
+
+Derived: the ExecPlan concept and its document structure -- the non-negotiable
+requirements, the mandatory living-document sections (Progress, Surprises & Discoveries,
+Decision Log, Outcomes & Retrospective), the skeleton's section taxonomy, and the
+formatting conventions. Much of the prose is rewritten, but not all: the section names
+are the source's verbatim and in its order, and the requirements bullets and the formatting
+paragraph are close paraphrase. The selection and arrangement are the source's throughout.
+
+Not derived: everything from "The standard acceptance criteria" onward in that file --
+the acceptance criteria, the repo conventions, the PR scope guidance, and the failure
+modes a plan should pre-empt -- along with every other file in this repository.
