@@ -1,8 +1,8 @@
 # r-package-dev-skill
 
-A rigorous development workflow for **statistical and numerical R packages** (the kind that
-implement an estimator, a model, or an algorithm against a documented methodology), packaged as
-a skill for coding agents.
+This is a rigorous development workflow for **statistical and numerical R packages** (the kind
+that implement an estimator, a model, or an algorithm against a documented methodology),
+packaged as a skill for coding agents.
 
 The idea is that the input to the skill is a reasonably well-defined issue for an R package,
 and the output is a PR solving the issue ready for your review.
@@ -14,7 +14,7 @@ and the output is a PR solving the issue ready for your review.
                   →  disposition sweep  →  PR to main
 
 The cycle combines subagents, review before and after implementation, and one unconditional
-CRAN gate. The agent never commits to the default branch; whether it may merge is set by the
+CRAN gate. The agent never commits to the default branch. Whether it may merge is set by the
 profile's `Governance` field, which defaults to "no."
 
 ## Design notes
@@ -24,44 +24,43 @@ parameters because the repo-specific surface is smaller than it looks. It consis
 commands, the authority document, the naming and error conventions, the public API, and a
 handful of gotchas that cost real time to re-derive. Everything else generalizes.
 
-Some profile fields switch the process in addition to describing it. The table in
+Some profile fields switch the process in addition to describing the package. The table in
 [USAGE.md](USAGE.md#your-first-cycle-is-cleaning-the-gate) lists which fields these are and
-what each one switches, and the template marks them **[switch]** where they are filled in.
+what each one switches, and the template marks them **[switch]** where they're filled in.
 
-The lessons keep their stories and their real names, because anonymizing them would make them
-vaguer without making them more general. Instead, the provenance is disclosed once up front and
-the specifics are left intact. The catalogue is indexed for skimming and cross-linked to
-wherever the operational detail is documented.
+I kept the lessons' stories and real names, because anonymizing the lessons would make them
+vaguer without making them more general. The catalogue is indexed for skimming and cross-linked
+to wherever the operational detail is documented.
 
-Target selection and prioritization (tier ordering, heuristics, the queue) deliberately stayed
-repo-local. Those are genuinely per-package, because the tiers are calibrated to one package's
-bug history and one methodology's constraints.
+I deliberately kept target selection and prioritization (tier ordering, heuristics, the queue)
+repo-local. They really are per-package, because the tiers are calibrated to one package's bug
+history and one methodology's constraints.
 
 ## What you need first
 
 Check these before you start:
 
 - **A coding-agent harness with subagents.** The skill assumes subagents are available for
-  reviewing. A harness without subagents can still run this manually; see
-  [`harness-notes.md`](references/harness-notes.md).
-- **R, plus `devtools`, `testthat`, `urlchecker`, and `spelling`.** The last two are separate
-  CRAN packages rather than part of devtools, and the gate calls both. Install the packages
-  with `install.packages(c("devtools", "urlchecker", "spelling"))` (or ask your agent to do it
-  when you load the skill).
+  reviewing. A harness without subagents can still run this manually (see
+  [`harness-notes.md`](references/harness-notes.md)).
+- **R, plus `devtools`, `testthat`, `urlchecker`, and `spelling`.** The last two aren't part of
+  devtools. They're separate CRAN packages, and the gate calls both. Install the packages with
+  `install.packages(c("devtools", "urlchecker", "spelling"))` (or ask your agent to do it when
+  you load the skill).
 - **A formatter, or a deliberate `none`.** The profile records whether the package uses
   [`air`](https://tidyverse.org/blog/2025/02/air/) (preferred) or `styler`, and `none` is a
-  valid answer that stops the agent introducing one.
-- **`gh`, authenticated, against a GitHub remote.** PR creation, CI status, and the
-  disposition sweep's "file an issue" path all shell out to `gh`. GitLab and Bitbucket have
-  no path here today.
+  valid answer that stops the agent from introducing one.
+- **`gh`, authenticated, against a GitHub remote.** PR creation, CI status, and the disposition
+  sweep's "file an issue" path all shell out to `gh`. GitLab and Bitbucket have no path here
+  today.
 - **Willingness to gitignore `.workflow/` and `.plans/`.** `bootstrap-repo.sh` adds them, along
   with `.claude/`, to your tracked ignore files. (Or you can specify you don't want them
   ignored if you want.)
 - **Optional: a `UserPromptSubmit` hook.** It works around a Claude Code bug that silently
-  suppresses subagents, at the cost of hand-editing `~/.claude/settings.json` and running a
-  script on every prompt in every repo; see [`harness-notes.md`](references/harness-notes.md).
+  suppresses subagents. The cost is hand-editing `~/.claude/settings.json` and running a script
+  on every prompt in every repo (see [`harness-notes.md`](references/harness-notes.md)).
 
-If you are installing somewhere other than Claude Code, set `AGENT_SKILLS_DIR` (by default
+If you're installing somewhere other than Claude Code, set `AGENT_SKILLS_DIR` (by default
 `~/.claude/skills`) to wherever your harness looks for skills.
 
 ## Install
@@ -75,8 +74,8 @@ bash scripts/install.sh          # symlinks it where your agent looks for skills
 ```
 
 `SKILL.md` is the entry point and router, and everything substantive is in
-[`references/`](references/). The workflow requires subagents, but beyond that it is plain
-markdown; see [`references/harness-notes.md`](references/harness-notes.md) for the mapping onto
+[`references/`](references/). The workflow requires subagents, but beyond that it's plain
+markdown; see [`references/harness-notes.md`](references/harness-notes.md) for how it maps onto
 a specific agent harness.
 
 Then, in any R package repo that doesn't have one yet:
@@ -88,12 +87,12 @@ bash scripts/bootstrap-repo.sh   # run from the package's repo root
 That scaffolds `.workflow/` and `.plans/`, copies in the profile template, and adds the
 gitignore entries, plus the matching `.Rbuildignore` regexes when a `DESCRIPTION` is present.
 
-Expect your first cycle to be cleaning the CRAN gate--the skill will want your package to be
+Expect your first cycle to be cleaning the CRAN gate—the skill will want your package to be
 CRAN-ready after each PR, so the first step may be getting your current package CRAN-ready.
-[USAGE.md](USAGE.md#your-first-cycle-is-cleaning-the-gate) owns what that involves. The skill
-also needs basic information about your package, called a *profile*. Direct your coding agent
-to follow [`references/adoption.md`](references/adoption.md) to derive the profile for your
-package field by field.
+[USAGE.md](USAGE.md#your-first-cycle-is-cleaning-the-gate) explains what that involves. The
+skill also needs basic information about your package, called a *profile*. Direct your coding
+agent to follow [`references/adoption.md`](references/adoption.md) to derive the profile for
+your package field by field.
 
 [USAGE.md](USAGE.md) is the human's guide. It covers what a session looks like, what you'll be
 asked for, how to steer it faster or slower, which output files are worth reading, and what to
@@ -107,21 +106,20 @@ CRAN-published (or at least CRAN-ready). Plain devtools packages and literate/ge
 roxygen2, testthat, and each of S3, S4, R6, and S7. The formatter may be `air`, `styler`, or
 none, and CI may be present or absent.
 
-The skill is also usable outside that target, with substitutions. The planning format, the
+You can also use the skill outside that target, with substitutions. The planning format, the
 subagents, the review discipline, the git workflow, the object-systems reference, and most of
-the lesson catalogue transfer unchanged to a non-numerical package, such as a web client, a
-data-wrangling or visualization package, or developer tooling. The periodic-review lenses,
-which are organized around estimator cores and shared math machinery, do not transfer
-unchanged, and neither do the rank-deficiency and variance-convention checks in the reviewer or
-the simulation-study discipline. Substitute your own lenses rather than applying those
-vacuously.
+the lesson catalogue transfer unchanged to a non-numerical package, like a web client, a
+data-wrangling or visualization package, or developer tooling. But the periodic-review lenses,
+which are organized around estimator cores and shared math machinery, don't transfer unchanged.
+Neither do the rank-deficiency and variance-convention checks in the reviewer, or the
+simulation-study discipline. Substitute your own lenses instead of applying those vacuously.
 
 Governance models other than a single maintainer who reviews and merges everything are
 supported but thinly tested. The `team` and `outside-contributor` paths are written down, but
 the workflow was derived from single-maintainer repos. Where a repo's `CONTRIBUTING.md` or
 branch protection rules disagree with the skill, they win.
 
-The skill does not yet cover Bioconductor (different branch model, `BiocCheck`, six-month
+The skill doesn't yet cover Bioconductor (different branch model, `BiocCheck`, six-month
 release cycle), non-testthat frameworks, compiled code in `src/`, or `renv` and similar project
 layers. Only the gate and the release model need local adjustment there.
 
@@ -165,4 +163,4 @@ MIT; see [LICENSE](LICENSE).
 
 `references/execplan.md` derives its structure from the OpenAI Cookbook's
 [ExecPlans article](https://github.com/openai/openai-cookbook/blob/main/articles/codex_exec_plans.md)
-(MIT, Copyright (c) 2025 OpenAI); see [NOTICE](NOTICE) for what is derived and what is not.
+(MIT, Copyright (c) 2025 OpenAI). See [NOTICE](NOTICE) for what's derived and what isn't.

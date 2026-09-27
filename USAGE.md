@@ -1,7 +1,7 @@
 # Using this skill
 
-This guide is written for you rather than for the agent. Everything else in this repo is
-written for Claude to read, and this file explains how you drive it.
+This guide is written for you instead of the agent. Everything else in this repo is written
+for Claude to read, and this file explains how you drive it.
 
 ---
 
@@ -13,8 +13,8 @@ cd r-package-dev-skill
 bash scripts/install.sh
 ```
 
-[`install.sh`](scripts/install.sh) symlinks the repo into `~/.claude/skills/r-package-dev`, so
-edits to the repo take effect immediately, without a reinstall. Verify with
+[`install.sh`](scripts/install.sh) symlinks the repo into `~/.claude/skills/r-package-dev`,
+which means edits to the repo take effect immediately, without a reinstall. Verify with
 `bash scripts/install.sh --check`.
 
 ## Setup, once per package
@@ -30,16 +30,16 @@ the [profile template](templates/PROFILE.md), and adds the gitignore entries. It
 and safe to re-run, and it never overwrites an existing profile.
 
 Then fill in `.workflow/PROFILE.md`. This is the one piece of real work, and every serious
-failure in this workflow has come from it rather than from the process.
+failure in this workflow has come from it and not from the process.
 
-Rather than asking Claude to improvise, point it at the procedure by telling it to "follow
+Instead of asking Claude to improvise, point it at the procedure by telling it to "follow
 [`references/adoption.md`](references/adoption.md) in the r-package-dev skill and fill in
 `.workflow/PROFILE.md` for this repo." That file has a per-field table of the command that
-derives each answer, so the profile is measured rather than guessed. The procedure also
-requires anything that couldn't be derived to be marked as inherited.
+derives each answer, so the profile is measured and not guessed. The procedure also requires
+anything that couldn't be derived to be marked as inherited.
 
 Then read what it wrote and correct it. It will get commands and layout right and guess at
-conventions, which are your decisions rather than facts about the repo.
+conventions, which aren't facts about the repo but your decisions.
 
 ### Your first cycle is cleaning the gate
 
@@ -106,11 +106,11 @@ A normal session looks like this:
 
 Expect one more round after that, in which your own review comments are answered on the same
 branch, with the gate re-run and every claim a command settles re-derived at the new tip.
-`SKILL.md` stage 8 owns what that round owes you.
+Stage 8 of `SKILL.md` defines what that round owes you.
 
-The pause before "yes" is the load-bearing part, because most of the value in this workflow is
-in getting the scope right before any code exists. If you find yourself saying "yes, and also…"
-a lot, tell it that its questions were too narrow.
+The pause before "yes" is the most important part, because most of the value in this workflow
+is in getting the scope right before any code exists. If you find yourself saying "yes, and
+also…" a lot, tell it that its questions were too narrow.
 
 ### What you'll be asked for
 
@@ -132,7 +132,7 @@ a lot, tell it that its questions were too narrow.
 
 Smaller is better, because the workflow works best on a well-scoped bug fix or one
 self-contained feature. If a task touches three unrelated areas, split it yourself before
-starting; the agent will suggest splitting, but it's cheaper to decide up front.
+starting—the agent will suggest splitting, but it's cheaper to decide up front.
 
 To go faster on something genuinely trivial, say so: "This is a one-line doc fix—skip the plan
 review." The skill does not allow the agent to decide that on its own, precisely because the
@@ -146,8 +146,8 @@ committing to it." The extra rounds are worth their cost on math-touching change
 performance claims.
 
 If a review round feels like a formality, tell the agent, because it probably is one. Two
-rounds is normal for a non-trivial PR; three usually means the design is wrong, and the skill
-says so.
+rounds is normal for a non-trivial PR, but three usually means the design is wrong, and the
+skill says so.
 
 ---
 
@@ -157,23 +157,23 @@ Work goes in `.plans/<branch>/`, all gitignored: the ExecPlan, a findings file f
 pass (the drift sentinel's passes included) with the author's response beside it, and the PR
 body before it is posted. The name of each of those files is defined in exactly one place,
 [`references/execplan.md` § Artifact names](references/execplan.md#artifact-names), and every
-brief the agent hands its subagents takes the name from there rather than restating it.
+brief the agent hands its subagents takes the name from there and doesn't restate it.
 Subagent working files go in a `scratch/` subdirectory apiece.
 
 A one-round cycle stops after the first response to each review, and a `_v2` on any of them
 means a second round ran. No round ever overwrites an earlier one, because the agent's own
 end-of-cycle sweep for deferred items works by grepping this folder.
 
-The sentinel's pre-implementation and post-implementation passes have separate names rather
-than a shared one with a suffix, so a missing post pass is visible. `SKILL.md` makes that pass
-the gate on pushing, and a full cycle produces it every time. If it is not there, the push gate
-did not run.
+Because the sentinel's pre-implementation and post-implementation passes have separate names
+instead of a shared one with a suffix, a missing post pass is visible. `SKILL.md` makes that
+pass the gate on pushing, and a full cycle produces it every time. If it is not there, the push
+gate did not run.
 
 If you read one file, read the ExecPlan, specifically the following sections. Read
 `Purpose / Big Picture` to see whether this matches what you asked for, and `Decision Log` to
 see what it decided without you. Read `Questions for the Maintainer` to see what it asked you
-that you never answered, and what it assumed instead. The unanswered ones are repeated to you
-in the handoff message, so nothing there should be a surprise. They stay findable in that
+that you never answered, and what it assumed instead. Since the unanswered ones are repeated
+to you in the handoff message, nothing there should be a surprise. They stay findable in that
 section afterwards.
 
 If you read two, add the post-execution review, whose "What I did NOT verify" section is the
@@ -193,14 +193,14 @@ the default branch too, then note it in the PR description and move on. The skil
 pre-existing NOTEs on the default branch aren't the PR's problem, but `error_on = "note"` will
 still fail the run.
 
-If a review keeps finding the same thing, ask the agent to re-plan rather than iterate, because
+If a review keeps finding the same thing, ask the agent to stop iterating and re-plan, because
 three rounds means a structural problem that patching will not fix.
 
 If it's slow on something small, that is because the full cycle is heavy by design. Downshift
 explicitly (above), or batch several small fixes into one PR and say that's what you're doing.
 
-If it claims work it didn't do, ask to see the review files. Everything the workflow produces
-is gitignored, so nothing in the PR proves the reviews ran.
+If it claims work it didn't do, ask to see the review files. Since everything the workflow
+produces is gitignored, nothing in the PR proves the reviews ran.
 
 ---
 
@@ -209,18 +209,18 @@ is gitignored, so nothing in the PR proves the reviews ran.
 When a cycle teaches you something that would have saved time if it had been written down, the
 destinations for it are ranked below, best first. This is
 [acceptance criterion 19](references/execplan.md#the-standard-acceptance-criteria), and the
-agent should already be proposing a disposition rather than waiting to be asked.
+agent should already be proposing a disposition without waiting to be asked.
 
 - **A check**: a gate, an acceptance criterion, a reviewer or sentinel bullet. Always
   preferred, because it fires whether anyone read it or not.
 - **A profile gotcha** → `.workflow/PROFILE.md`, § 12, when it's specific to this package.
 - **A lesson** → [`references/lessons.md`](references/lessons.md), when it both applies
-  anywhere and can't be mechanized. A lesson is an admission that no check exists.
+  anywhere and can't be mechanized. Writing one means admitting that no check exists.
 - **Nothing**, which is the default. Most of what a cycle surfaces was surprising once and
   won't recur.
 
 The ranking matters more than the destinations. A lesson that's only written down recurs
-anyway, and the skill's own lesson 1 is about exactly that. Ask what gate would have caught
+anyway, and that's the subject of the skill's own lesson 1. Ask what gate would have caught
 this, and write it down only if the answer is "none, and I can't build one."
 
 ---
