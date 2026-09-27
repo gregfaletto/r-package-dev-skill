@@ -4,52 +4,54 @@ A rigorous development workflow for **statistical and numerical R packages** (th
 implement an estimator, a model, or an algorithm against a documented methodology), packaged as
 a skill for coding agents.
 
-A skill is a directory of markdown the agent loads on demand, when the task matches. This one
-installs into Claude Code and works in any harness that can spawn subagents.
+The idea is that the input to the skill is a reasonably well-defined issue for an R package, and the output is a PR solving the issue ready for your review.
 
-The distinguishing property of these packages is that a wrong answer looks exactly like a right
-answer. There is no crash, no failing type check, and often no failing test, because the test
-was written from the same derivation as the bug. Most of this workflow exists to defend against
-that: a plan reviewed before code is written, an implementation reviewed against the
-methodology, a drift sentinel for the failure classes that recur, and a catalogue of the ways
-it has actually gone wrong.
+## The cycle
 
-The skill is distilled from the `.workflow/` documentation that grew inside
-[`fetwfePackage`](https://github.com/gregfaletto/fetwfePackage) and
-[`cssr-project`](https://github.com/gregfaletto/cssr-project). `fetwfePackage` is for
-difference-in-differences with staggered adoption, and `cssr-project` is for cluster stability
-selection and is built with `litr`. The stories of past failures and the worked examples
-throughout name real functions from those codebases, because that is where they happened.
+    clarify scope  →  ExecPlan  →  plan review + sentinel  →  implement
+                  →  CRAN gate  →  post-exec review + sentinel
+                  →  disposition sweep  →  PR to main
 
-## The problem it solves
+The cycle combines subagents, review before and after implementation, and one unconditional
+CRAN gate. The agent never commits to the default branch; whether it may merge is set by the
+profile's `Governance` field, which defaults to "no."
 
-Both repos had converged on the same ~2,900-line `.workflow/` tree: the ExecPlan format, the
-subagent briefs, the per-PR CRAN gate, and a catalogue of failure modes. The two copies were
-~95% identical and drifting apart. A lesson learned in one repo had to be hand-ported to the
-other, or it wasn't.
+## Design notes
 
-The skill inverts that arrangement. It carries the process, and each repo carries only its own
-facts, in a thin `.workflow/PROFILE.md`.
+The skill uses a *profile* (more details below) that characterizes the package instead of parameters because the repo-specific surface is smaller
+than it looks. It consists of build commands, the authority document, the naming and error
+conventions, the public API, and a handful of gotchas that cost real time to re-derive.
+Everything else generalizes.
+
+Some profile fields switch the process in addition to describing it. The table in
+[USAGE.md](USAGE.md#your-first-cycle-is-cleaning-the-gate) lists which fields these are and
+what each one switches, and the template marks them **[switch]** where they are filled in.
+
+The lessons keep their stories and their real names, because anonymizing them would make them
+vaguer without making them more general. Instead, the provenance is disclosed once up front and
+the specifics are left intact. The catalogue is indexed for skimming and cross-linked to
+wherever the operational detail is documented.
+
+Target selection and prioritization (tier ordering, heuristics, the queue) deliberately stayed
+repo-local. Those are genuinely per-package, because the tiers are calibrated to one package's
+bug history and one methodology's constraints.
 
 ## What you need first
 
-Check these before you start, or you will discover each one on failure, usually mid-gate:
+Check these before you start:
 
-- **A coding-agent harness with subagents.** It is not optional, because the cycle spawns a
-  plan reviewer, an implementer, a post-execution reviewer, and the drift sentinel on both its
-  pre-implementation and its post-implementation pass, and because a reviewer that shares the
-  author's context agrees with itself. A harness without subagents can still run this manually;
+- **A coding-agent harness with subagents.** The skill assumes subagents are available for reviewing. A harness without subagents can still run this manually;
   see [`harness-notes.md`](references/harness-notes.md).
 - **R, plus `devtools`, `testthat`, `urlchecker`, and `spelling`.** The last two are separate
   CRAN packages rather than part of devtools, and the gate calls both. Install the packages
-  with `install.packages(c("devtools", "urlchecker", "spelling"))`.
-- **A formatter, or a deliberate `none`.** The profile records whether the package uses `air`
+  with `install.packages(c("devtools", "urlchecker", "spelling"))` (or ask your agent to do it when you load the skill).
+- **A formatter, or a deliberate `none`.** The profile records whether the package uses [`air`](https://tidyverse.org/blog/2025/02/air/) (preferred)
   or `styler`, and `none` is a valid answer that stops the agent introducing one.
 - **`gh`, authenticated, against a GitHub remote.** PR creation, CI status, and the
   disposition sweep's "file an issue" path all shell out to `gh`. GitLab and Bitbucket have
   no path here today.
 - **Willingness to gitignore `.workflow/` and `.plans/`.** `bootstrap-repo.sh` adds them,
-  along with `.claude/`, to your tracked ignore files.
+  along with `.claude/`, to your tracked ignore files. (Or you can specify you don't want them ignored if you want.)
 - **Optional: a `UserPromptSubmit` hook.** It works around a Claude Code bug that silently
   suppresses subagents, at the cost of hand-editing `~/.claude/settings.json` and running a
   script on every prompt in every repo; see [`harness-notes.md`](references/harness-notes.md).
@@ -58,6 +60,8 @@ If you are installing somewhere other than Claude Code, set `AGENT_SKILLS_DIR` (
 `~/.claude/skills`) to wherever your harness looks for skills.
 
 ## Install
+
+You can do the below yourself or just ask your coding agent to do it.
 
 ```bash
 git clone https://github.com/gregfaletto/r-package-dev-skill.git
@@ -78,10 +82,10 @@ bash scripts/bootstrap-repo.sh   # run from the package's repo root
 
 That scaffolds `.workflow/` and `.plans/`, copies in the profile template, and adds the
 gitignore entries, plus the matching `.Rbuildignore` regexes when a `DESCRIPTION` is present.
-Expect your first cycle to be cleaning the CRAN gate.
-[USAGE.md](USAGE.md#your-first-cycle-is-cleaning-the-gate) owns what that involves. Then follow
-[`references/adoption.md`](references/adoption.md) to derive the profile field by field. That
-is the one piece of real setup work, and the one place where accuracy matters most.
+
+Expect your first cycle to be cleaning the CRAN gate--the skill will want your package to be CRAN-ready after each PR, sothe first step may be getting your current package CRAN-ready.
+[USAGE.md](USAGE.md#your-first-cycle-is-cleaning-the-gate) owns what that involves. The skill also needs basic information about your package, called a *profile*. Direct your coding agent to follow
+[`references/adoption.md`](references/adoption.md) to derive the profile for your package field by field.
 
 [USAGE.md](USAGE.md) is the human's guide. It covers what a session looks like, what you'll be
 asked for, how to steer it faster or slower, which output files are worth reading, and what to
@@ -90,7 +94,7 @@ do when something goes wrong. Everything else in this repo is written for the ag
 ## Scope
 
 The skill is written for R packages implementing statistical or numerical methodology, usually
-CRAN-published. Plain devtools packages and literate/generated (litr) packages are both in
+CRAN-published (or at least CRAN-ready). Plain devtools packages and literate/generated ([litr](https://jacobbien.github.io/litr-project/)) packages are both in
 scope, as are roxygen2, testthat, and each of S3, S4, R6, and S7. The formatter may be `air`,
 `styler`, or none, and CI may be present or absent.
 
@@ -144,36 +148,6 @@ layers. Only the gate and the release model need local adjustment there.
       check-fields.R                        every field the template defines has to be named
       check-profile.R                       checks a repo's PROFILE.md against the template
     USAGE.md                                the human's guide — start here
-
-## The cycle
-
-    clarify scope  →  ExecPlan  →  plan review + sentinel  →  implement
-                  →  CRAN gate  →  post-exec review + sentinel
-                  →  disposition sweep  →  PR to main
-
-The cycle combines subagents, review before and after implementation, and one unconditional
-CRAN gate. The agent never commits to the default branch; whether it may merge is set by the
-profile's `Governance` field, which defaults to "no."
-
-## Design notes
-
-The skill uses a profile instead of parameters because the repo-specific surface is smaller
-than it looks. It consists of build commands, the authority document, the naming and error
-conventions, the public API, and a handful of gotchas that cost real time to re-derive.
-Everything else generalizes.
-
-Some profile fields switch the process in addition to describing it. The table in
-[USAGE.md](USAGE.md#your-first-cycle-is-cleaning-the-gate) lists which fields these are and
-what each one switches, and the template marks them **[switch]** where they are filled in.
-
-The lessons keep their stories and their real names, because anonymizing them would make them
-vaguer without making them more general. Instead, the provenance is disclosed once up front and
-the specifics are left intact. The catalogue is indexed for skimming and cross-linked to
-wherever the operational detail is documented.
-
-Target selection and prioritization (tier ordering, heuristics, the queue) deliberately stayed
-repo-local. Those are genuinely per-package, because the tiers are calibrated to one package's
-bug history and one methodology's constraints.
 
 ## Editing this skill
 
