@@ -32,4 +32,4 @@ so it exists once. Anything harness-specific goes in `references/harness-notes.m
 Before you finish, run `Rscript scripts/check-docs.R` and `Rscript scripts/check-briefs.R`,
 plus `Rscript scripts/check-fields.R` if you touched an instruction or
 `templates/PROFILE.md`. What each list in their output obliges you to do is in
-[`README.md` § "Editing this skill"](README.md#editing-this-skill).
+[`CONTRIBUTING.md`](CONTRIBUTING.md).
