@@ -411,8 +411,9 @@ If the current R package repo has no `.workflow/PROFILE.md`, **follow
 owns the scaffold command together with the tracked files that command edits and the commit
 the maintainer has to land, a per-field table of the command that derives each profile
 answer, the rule that anything you couldn't derive gets marked as inherited rather than
-stated, and a first-run verification pass to do before any real cycle. The profile is where
-this workflow's failures come from; deriving it is the job, and guessing at it is the failure.
+stated, and a first-run verification pass to do before any real cycle. Several of this
+workflow's serious failures came from a profile that was wrong; deriving it is the job, and
+guessing at it is the failure.
 
 ---
 

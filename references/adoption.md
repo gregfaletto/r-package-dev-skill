@@ -13,8 +13,8 @@
 ---
 
 For a package starting from zero — no existing workflow docs. The whole job is producing an
-accurate `.workflow/PROFILE.md`, because **every serious failure in this workflow's history
-traces to a profile that was wrong**, not to the process:
+accurate `.workflow/PROFILE.md`, because **several serious failures in this workflow's history
+trace to a profile that was wrong**:
 
 - a Public API list typed from memory omitted two exported functions, and the omission
   propagated into a plan that would have shipped inconsistent documentation;

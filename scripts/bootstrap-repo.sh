@@ -62,8 +62,8 @@ Done. Next:
 
   1. Derive .workflow/PROFILE.md by following references/adoption.md — it has a
      per-field table of the command that produces each answer. Do not guess a
-     field that has a command; every serious failure this workflow has had came
-     from a profile that was wrong.
+     field that has a command; a wrong profile has caused several of this
+     workflow's serious failures.
   2. Confirm the filled profile with the maintainer before relying on it.
   3. Add an AGENTS.md / CLAUDE.md at the repo root pointing at the r-package-dev
      skill and at .workflow/PROFILE.md, and carrying the delegation standing

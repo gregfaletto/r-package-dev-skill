@@ -78,10 +78,10 @@ bash scripts/install.sh          # symlinks it where your agent looks for skills
 markdown; see [`references/harness-notes.md`](references/harness-notes.md) for how it maps onto
 a specific agent harness.
 
-Then, in any R package repo that doesn't have one yet:
+Then, from the root of any R package repo that doesn't have one yet:
 
 ```bash
-bash scripts/bootstrap-repo.sh   # run from the package's repo root
+bash "${AGENT_SKILLS_DIR:-$HOME/.claude/skills}/r-package-dev/scripts/bootstrap-repo.sh"
 ```
 
 That scaffolds `.workflow/` and `.plans/`, copies in the profile template, and adds the

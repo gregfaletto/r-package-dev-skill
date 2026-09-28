@@ -29,14 +29,14 @@ bash "${AGENT_SKILLS_DIR:-$HOME/.claude/skills}/r-package-dev/scripts/bootstrap-
 the [profile template](templates/PROFILE.md), and adds the gitignore entries. It is idempotent
 and safe to re-run, and it never overwrites an existing profile.
 
-Then fill in `.workflow/PROFILE.md`. This is the one piece of real work, and every serious
-failure in this workflow has come from it and not from the process.
+Then fill in `.workflow/PROFILE.md`. This is the one piece of real work, and a wrong profile
+has caused several serious failures in this workflow.
 
 Instead of asking Claude to improvise, point it at the procedure by telling it to "follow
 [`references/adoption.md`](references/adoption.md) in the r-package-dev skill and fill in
 `.workflow/PROFILE.md` for this repo." That file has a per-field table of the command that
-derives each answer, so the profile is measured and not guessed. The procedure also requires
-anything that couldn't be derived to be marked as inherited.
+derives each answer a command can settle, so those fields are measured and not guessed. The
+procedure also requires anything that couldn't be derived to be marked as inherited.
 
 Then read what it wrote and correct it. It will get commands and layout right and guess at
 conventions, which aren't facts about the repo but your decisions.
@@ -84,8 +84,8 @@ it's forbidden from committing to your default branch.
 
 ## Day to day
 
-You don't invoke the skill, because Claude loads it when it sees an R package. If it doesn't,
-say "use the r-package-dev skill."
+You don't invoke the skill, because Claude loads it when you ask it to start work in an R
+package. If it doesn't, say "use the r-package-dev skill."
 
 A normal session looks like this:
 
@@ -101,8 +101,8 @@ A normal session looks like this:
 >
 > **You:** Yes.
 >
-> From here it runs without stopping: plan → plan review → implement → gate → review → PR.
-> It comes back when the PR is ready.
+> From here it runs without asking you to approve each step: plan → plan review → implement →
+> gate → review → PR. It comes back when the PR is ready.
 
 Expect one more round after that, in which your own review comments are answered on the same
 branch, with the gate re-run and every claim a command settles re-derived at the new tip.
@@ -116,8 +116,8 @@ also…" a lot, tell it that its questions were too narrow.
 
 - **A scope confirmation**, once, at the start. Required.
 - **A separate message listing deferred items**, at the end, each marked as *filed as an
-  issue*, *folded into a named next PR*, or *dropped, because…*. Confirm or override them. This
-  exists because deferred work otherwise vanishes.
+  issue*, *done now or folded into a named next PR*, or *dropped, because…*. Confirm or
+  override them. This exists because deferred work otherwise vanishes.
 - **Occasionally, a blocking question** about a design decision the plan didn't anticipate.
 
 ### What you shouldn't have to do
