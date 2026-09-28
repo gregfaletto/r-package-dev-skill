@@ -213,9 +213,9 @@ drops `\examples{}` whole — comments and string literals with the code, and ev
 contents of `\preformatted{}`, `\code{}` and `\eqn{}`. `\preformatted{}` is the one that
 surprises: roxygen2 renders a markdown fenced code block into it, so a typo in a fenced block
 under `@details` ships exactly as one in `@examples` does. The prose itself is read,
-`\value{}`, `\note{}` and `\seealso{}` included, so the obligation stays narrow: when you
-touch an `@examples` block or a fenced one, proofread it yourself (R 4.5.0, roxygen2 8.0.0 and
-spelling 2.3.1, 2026-09-01).
+`\value{}`, `\note{}` and `\seealso{}` included, so the obligation stays narrow: proofread
+every `@examples` or fenced block the diff touches (R 4.5.0, roxygen2 8.0.0 and spelling 2.3.1,
+2026-09-27).
 
 **That residual is one-directional, so the wordlist rots silently.** An entry that covers
 nothing is never reported, so it outlives the term it was added for — and since many entries
