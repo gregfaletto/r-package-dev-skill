@@ -28,9 +28,9 @@ Some profile fields switch the process in addition to describing the package. Th
 [USAGE.md](USAGE.md#your-first-cycle-is-cleaning-the-gate) lists which fields these are and
 what each one switches, and the template marks them **[switch]** where they're filled in.
 
-I kept the lessons' stories and real names, because anonymizing the lessons would make them
-vaguer without making them more general. The catalogue is indexed for skimming and cross-linked
-to wherever the operational detail is documented.
+I kept the lessons' stories and the real function and variable names in them, because
+anonymizing the lessons would make them vaguer without making them more general. The catalogue
+is indexed for skimming and cross-linked to wherever the operational detail is documented.
 
 I deliberately kept target selection and prioritization (tier ordering, heuristics, the queue)
 repo-local. They really are per-package, because the tiers are calibrated to one package's bug

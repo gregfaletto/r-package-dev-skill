@@ -58,10 +58,10 @@ real documentation errors. `url_check()` finds citations that have rotted, and
 `no visible binding for global variable` is an unqualified name that will fail at runtime on
 some path.
 
-Get the gate as close to clean as you can, and put what genuinely won't move in the profile's
-§ 3 by name, with the reason and the date. From then on the bar is that the gate flags only
-what is on that accepted exceptions list, and that bar is falsifiable again. An empty list is
-the goal and a common answer.
+Get the gate as close to clean as you can, and put what really won't move in the profile's § 3
+by name, with the reason and the date. From then on the bar is that the gate flags only what is
+on that accepted exceptions list, and that bar is falsifiable again. An empty list is the goal
+and a common answer.
 
 Several fields change what the agent does in addition to describing the repo. Get these right
 and the rest is cosmetic:
@@ -75,8 +75,8 @@ and the rest is cosmetic:
 | **Method-entry preconditions** | Sets the drift sentinel's second check to blocking or advisory. |
 
 The bootstrap step commits nothing, but it does modify the tracked `.gitignore`. It also
-modifies the tracked `.Rbuildignore`, but only when there is a `DESCRIPTION` at the repo root,
-so a package generated from a source document gets the gitignore lines alone. Land whichever it
+modifies the tracked `.Rbuildignore`, but only when there is a `DESCRIPTION` at the repo root.
+So a package generated from a source document gets the gitignore lines alone. Land whichever it
 wrote yourself in a small commit before starting feature work. The agent won't do it, because
 it's forbidden from committing to your default branch.
 
@@ -134,9 +134,9 @@ Smaller is better, because the workflow works best on a well-scoped bug fix or o
 self-contained feature. If a task touches three unrelated areas, split it yourself before
 starting—the agent will suggest splitting, but it's cheaper to decide up front.
 
-To go faster on something genuinely trivial, say so: "This is a one-line doc fix—skip the plan
-review." The skill does not allow the agent to decide that on its own, precisely because the
-gates get skipped on the grounds that "this is obviously trivial." You can make that decision
+To go faster on something that really is trivial, say so: "This is a one-line doc fix—skip the
+plan review." The skill does not allow the agent to decide that on its own, because the gates
+get skipped on the grounds that "this is obviously trivial." You can make that decision
 yourself, one issue at a time. When the agent runs a stage more thinly, for example with a
 shorter plan or with only the post sentinel pass, it announces that rather than asking. Veto
 that if you'd rather it didn't.
