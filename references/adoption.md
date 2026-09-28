@@ -22,7 +22,8 @@ trace to a profile that was wrong**:
 - a "several minutes" build estimate was wrong in the other direction, discouraging work that
   actually took ninety seconds.
 
-Budget your effort accordingly: the cycle is self-correcting, the profile is not.
+Budget your effort accordingly: the cycle has reviews that can catch its mistakes, but a wrong
+fact in the profile reaches every stage that reads it.
 
 ## 1. Scaffold
 
