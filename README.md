@@ -4,8 +4,8 @@ This is a rigorous development workflow for **statistical and numerical R packag
 that implement an estimator, a model, or an algorithm against a documented methodology),
 packaged as a skill for coding agents.
 
-The idea is that given a reasonably well-defined issue for an R package, an AI agent using this skill can produce
-a pull request solving the issue ready for your review.
+The idea is that given a reasonably well-defined issue for an R package, an AI agent using this
+skill can produce a pull request solving the issue ready for your review.
 
 ## The cycle
 
@@ -13,7 +13,8 @@ a pull request solving the issue ready for your review.
                   →  CRAN gate  →  post-exec review + sentinel
                   →  disposition sweep  →  PR to main
 
-The cycle combines subagents, review before and after implementation, and a check for compatibility with CRAN requirements.
+The cycle combines subagents, review before and after implementation, and a check for
+compatibility with CRAN requirements.
 
 ## What you need first
 
@@ -22,13 +23,14 @@ Check these before you start:
 - **A coding-agent harness with subagents.** The skill assumes subagents are available for
   reviewing. A harness without subagents can still run this manually (see
   [`harness-notes.md`](references/harness-notes.md)).
-- **R, plus `devtools`, `testthat`, `urlchecker`, and `spelling` packages.** Install the packages with
-  `install.packages(c("devtools", "urlchecker", "spelling"))` (or ask your agent to do it when
-  you load the skill).
+- **R, plus `devtools`, `testthat`, `urlchecker`, and `spelling` packages.** Install the
+  packages with `install.packages(c("devtools", "urlchecker", "spelling"))` (or ask your agent
+  to do it when you load the skill).
 - **A formatter, or a deliberate `none`.** The profile records whether the package uses
-  [`air`](https://tidyverse.org/blog/2025/02/air/) (preferred), [`styler`](https://styler.r-lib.org/), or `none`.
-- **[`gh`](https://cli.github.com/), authenticated, against a GitHub remote.** PR creation, CI status, and the disposition
-  sweep's "file an issue" path all shell out to `gh`.
+  [`air`](https://tidyverse.org/blog/2025/02/air/) (preferred),
+  [`styler`](https://styler.r-lib.org/), or `none`.
+- **[`gh`](https://cli.github.com/), authenticated, against a GitHub remote.** PR creation, CI
+  status, and the disposition sweep's "file an issue" path all shell out to `gh`.
 - **Optional: a `UserPromptSubmit` hook.** It works around a Claude Code bug that silently
   suppresses subagents. The cost is hand-editing `~/.claude/settings.json` and running a script
   on every prompt in every repo (see [`harness-notes.md`](references/harness-notes.md)).
@@ -57,12 +59,14 @@ Then, from the root of any R package repo that doesn't have one yet:
 bash "${AGENT_SKILLS_DIR:-$HOME/.claude/skills}/r-package-dev/scripts/bootstrap-repo.sh"
 ```
 
-That scaffolds `.workflow/` and `.plans/`, copies in the profile template (more on profiles below), and adds the
-gitignore entries, plus the matching `.Rbuildignore` regexes when a `DESCRIPTION` is present.
+That scaffolds `.workflow/` and `.plans/`, copies in the profile template (more on profiles
+below), and adds the gitignore entries, plus the matching `.Rbuildignore` regexes when a
+`DESCRIPTION` is present.
 
 ## Getting Started
 
-If your package isn't already CRAN-ready, expect your first cycle to be cleanup so that it can be up to CRAN-ready standards after each pull request going forward.
+If your package isn't already CRAN-ready, expect your first cycle to be cleanup so that it can
+be up to CRAN-ready standards after each pull request going forward.
 [USAGE.md](USAGE.md#your-first-cycle-is-cleaning-the-gate) explains what that involves. The
 skill also needs basic information about your package, called a *profile*. Direct your coding
 agent to follow [`references/adoption.md`](references/adoption.md) to derive the profile for
@@ -74,8 +78,8 @@ do when something goes wrong.
 
 ## Design notes
 
-The skill uses a *profile* (more details below) that characterizes the package. It consists of build
-commands, the authority document, the naming and error conventions, the public API, and a
+The skill uses a *profile* (more details below) that characterizes the package. It consists of
+build commands, the authority document, the naming and error conventions, the public API, and a
 handful of gotchas.
 
 Some profile fields switch the process in addition to describing the package. The table in
@@ -85,9 +89,9 @@ what each one switches, and the template marks them **[switch]** where they're f
 ## Scope
 
 The skill is written for R packages implementing statistical or numerical methodology, usually
-intended to be published on CRAN (or at least kept up to CRAN-ready standards). Plain devtools packages and literate/generated
-([litr](https://jacobbien.github.io/litr-project/)) packages are both in scope, as are
-roxygen2, testthat, and each of S3, S4, R6, and S7.
+intended to be published on CRAN (or at least kept up to CRAN-ready standards). Plain devtools
+packages and literate/generated ([litr](https://jacobbien.github.io/litr-project/)) packages
+are both in scope, as are roxygen2, testthat, and each of S3, S4, R6, and S7.
 
 You can also use the skill outside that target, with substitutions. The planning format, the
 subagents, the review discipline, the git workflow, the object-systems reference, and most of
@@ -102,6 +106,20 @@ branch protection rules disagree with the skill, they win.
 The skill doesn't yet cover Bioconductor (different branch model, `BiocCheck`, six-month
 release cycle), non-testthat frameworks, compiled code in `src/`, or `renv` and similar project
 layers. Only the gate and the release model need local adjustment there.
+
+### Packages built with litr
+
+[litr](https://jacobbien.github.io/litr-project/) lets you write an R package as a literate
+program. The code, tests, and documentation are written together in R Markdown, and knitting
+the document generates the package. [cssr](https://github.com/gregfaletto/cssr-project) is
+built this way.
+
+The skill works with litr packages, and [`guides/litr.md`](guides/litr.md) covers what changes
+for them. The main difference is that the agent edits only the source document, since the next
+build overwrites the generated package. Instead of a `load_all()` loop, the agent rebuilds the
+package. A green build also means the tests woven into the document passed. The gate runs on
+the generated package directory, and the profile records the build command, the gate's flags,
+and that the version is set in the source document instead of the generated `DESCRIPTION`.
 
 ## What's in it
 
