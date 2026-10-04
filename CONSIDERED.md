@@ -21,8 +21,7 @@ it, and sweeping seeds is expensive.
 
 Replace "anything under `R/` … `tests/`" in SKILL.md stage 8 with "any change to an executable
 line under `R/` or `tests/`". Set aside because both #493 sessions already read it that way,
-and the prose commits that went unreviewed argue for more scrutiny of prose, not a clearer
-exemption.
+and the prose commits that went unreviewed now get stage 7's draft review before the push.
 
 - 2026-10-01, PR #493
 

@@ -307,9 +307,10 @@ changes land on nearly every non-trivial PR, and the commits that answer them ar
   touched: **anything under `R/` earns one**, and so does anything under `tests/` — that code
   has been read by nobody, and a small change made under review pressure is exactly what the
   post-execution review exists for. Commits confined to prose — documentation, `NEWS.md`, the
-  PR body, a comment — do not. When one is owed, run the sentinel's post-implementation pass
-  alongside it, converge as stage 6 does, then push. When the new commits answer a claim that
-  has now been corrected more than once, the round to ask for is
+  PR body, a comment — do not; they get stage 7's draft review before the push instead. When
+  one is owed, run the sentinel's post-implementation pass alongside it, converge as stage 6
+  does, then push. When the new commits answer a claim that has now been corrected more than
+  once, the round to ask for is
   [the narrow one stage 6 describes](#6-review-the-implementation), not another full pass.
 - **Hand back again rather than merging.** A review round does not change the Governance
   field.

@@ -593,13 +593,14 @@ would have caught the defect that shipped.
     - [ ] the PR body's own word and section count
     - [ ] every claim about what a test, an assertion, or a guard **covers** — re-run the
           mutation against the final tree, write on **this list** which assertions went red,
-          then find every place that figure is already stated: delete any copy in a comment or
-          roxygen, and reconcile the rest against it. Re-running proves the figure; reconciling
-          catches the copy that has gone stale, and that is the half people skip
+          then find every place that figure is already stated: delete any copy in a comment,
+          roxygen or `NEWS.md`, and reconcile the rest against it. Re-running proves the
+          figure; reconciling catches the copy that has gone stale, and that is the half people
+          skip
     - [ ] the **shipped** wording of a coverage claim you are correcting a second time — in a
-          comment or roxygen, delete it; in the PR body or `NEWS.md`, change its **form**
-          rather than its content, so it states the rule the assertions enforce, positively
-          and once, with no enumeration left to be wrong; then measure the new form too
+          comment, roxygen or `NEWS.md`, delete it; in the PR body, change its **form** rather
+          than its content, so it states the rule the assertions enforce, positively and once,
+          with no enumeration left to be wrong; then measure the new form too
     - [ ] every "nothing else changed" — no regression, no other caller affected — run on
           both trees, rather than recalled from the run that produced the change
     - [ ] **anything you took from a reviewer rather than measured yourself**, before it

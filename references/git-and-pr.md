@@ -83,10 +83,10 @@ check.
 **5. Update `NEWS.md` as part of the change, not at submission.** Every PR with a user-visible
 change adds a one-sentence, past-tense bullet naming the affected function, **under the
 existing `# <pkg> <version> (development version)` header** — not under a new version header.
-**The bullet states no measured figure**: where a reader needs numbers, such as how far
-estimates moved, it points to the issue or PR that records them. The version in that header is
-load-bearing. R's news parser drops a section whose header carries none —
-`tools:::.build_news_db_from_package_NEWS_md()` on a file headed
+**The bullet states no measured figure and no claim about what the tests cover**: where a
+reader needs numbers, such as how far estimates moved, it points to the issue or PR that
+records them. The version in that header is load-bearing. R's news parser drops a section whose
+header carries none — `tools:::.build_news_db_from_package_NEWS_md()` on a file headed
 `# <pkg> (development version)` returns nothing — so those bullets never reach the news
 database, and in a file with no other version header `R CMD check` reports
 `No news entries found`: a NOTE, and so a failed run under `error_on = "note"`. Write the

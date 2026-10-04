@@ -3,8 +3,8 @@
 > **Orchestrator:** spawn a subagent (see `references/harness-notes.md`) after the CRAN gate
 > passes and the implementation commits are on the feature branch, but **before**
 > pushing or opening the PR — that is the default. A review round re-runs this same brief
-> against the open PR, and SKILL.md stage 7 runs it before the push on the PR-description draft
-> and every commit since the last review pass; say which you are spawning.
+> against the open PR, and SKILL.md stages 7 and 8 run it before a push, on the PR-description
+> draft and every commit since the last review pass; say which you are spawning.
 > Brief it with: the branch name, the SHA of the implementation commit (so empirical
 > checks are reproducible), the path to the ExecPlan, every pre-implementation plan-review
 > round and the author's response to it (`.plans/<branch>/plan_review*.md`, so it doesn't
@@ -284,7 +284,7 @@ Then verify:
   drafted until after you run, so it is not where you look for the exemption. What is yours: an
   absent bullet is a finding unless the ExecPlan judged the PR purely internal — and a finding
   anyway if the diff plainly changes behavior. So is a bullet longer than one sentence, or one
-  that states a measured figure.
+  that states a measured figure or what the tests cover.
 - `git diff origin/main -- inst/CITATION` should normally be **empty**. If `CITATION` derives
   its version via `meta$Version` there is nothing to update; if it hard-codes the string, say
   so — that is a latent finding worth a one-line structural fix (the version-string class).
@@ -822,10 +822,10 @@ Never read, always run — in any round, including your first:
   interpretable, and a battery with no control agrees with itself. The obligation attaches to
   scoring a mutant rather than to the round, so **a round that scores none owes none** — this
   is the one item here you can be done with by not having done the thing it governs.
-- **A coverage claim in the PR body or `NEWS.md`.** Any claim about what a test, an assertion
-  or a guard *covers*, standing there, is re-derived by running the mutation — whatever a
-  prior round measured. The sentence reads correct either way; which assertions go red is the
-  only thing that says whether it is. In a comment or roxygen it is deleted, not re-derived.
+- **A coverage claim in the PR body.** Any claim about what a test, an assertion or a guard
+  *covers*, standing there, is re-derived by running the mutation — whatever a prior round
+  measured. The sentence reads correct either way; which assertions go red is the only thing
+  that says whether it is. In `NEWS.md`, a comment or roxygen it is deleted, not re-derived.
 - **A prior table, which is a prior measurement only at the commit it names.** If its stated
   commit is not the tip, or the tree it scored has since been restructured, re-run it and say
   which of the two applied. One plan claimed its battery was measured against the final test
