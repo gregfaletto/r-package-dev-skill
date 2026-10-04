@@ -548,7 +548,7 @@ would have caught the defect that shipped.
 
 17. **Every claim a command settles, re-derived at the final commit — as a list, not a
     glance.** Review findings land in follow-up commits *after* the post-execution review has
-    run, so nothing else in the cycle re-validates them. Checking *some* of them is the
+    run, so no reviewer has checked them yet. Checking *some* of them is the
     failure mode: one cycle re-verified its call-site counts and not its suite total, and the
     suite total was the stale one; another re-derived the gate, said out loud it would
     re-derive the red side, and did not.

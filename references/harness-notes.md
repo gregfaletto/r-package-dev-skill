@@ -172,3 +172,8 @@ make the request, in the user's voice, where the agent will read it:
 **Do not reach for `CLAUDE_CODE_SIMPLE=1`.** It is an alias for `--bare`: it removes the
 Agent tool outright, disables hooks — including the workaround above — and stops reading
 `CLAUDE.md`. It solves the message by removing the capability.
+
+**On 2026-10-01 the Claude Code desktop app's PR monitor did not relay a review comment that
+another session had posted under the maintainer's account**, and the session answering reviews
+waited about two hours for it. The cause is unconfirmed. When reviews can arrive that way, poll
+`gh pr view <n> --json comments,reviews` instead of relying on the monitor.

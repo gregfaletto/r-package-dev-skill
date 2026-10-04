@@ -3,7 +3,8 @@
 > **Orchestrator:** spawn a subagent (see `references/harness-notes.md`) after the CRAN gate
 > passes and the implementation commits are on the feature branch, but **before**
 > pushing or opening the PR — that is the default. A review round re-runs this same brief
-> against the open PR; say which of the two you are spawning.
+> against the open PR, and SKILL.md stage 7 runs it before the push on the PR-description draft
+> and every commit since the last review pass; say which you are spawning.
 > Brief it with: the branch name, the SHA of the implementation commit (so empirical
 > checks are reproducible), the path to the ExecPlan, every pre-implementation plan-review
 > round and the author's response to it (`.plans/<branch>/plan_review*.md`, so it doesn't
@@ -26,12 +27,13 @@
 > substitute the actual default branch — `master` and `devel` are both common, and every
 > `git diff origin/main` in this brief fails with `fatal: bad revision` on such a repo.
 >
-> **This brief runs at two stages, and one thing differs between them.** By default you run
-> before the push, so the PR body does not exist and cannot be checked — which is why the
-> citation, the `NEWS.md` exemption and a documented alignment gap are all routed to what the
-> PR body *owes* rather than to what it says. Re-run after a maintainer's review round, the PR
-> is open and its body is yours: read it, and a claim an earlier round said it owed and it does
-> not carry is a finding. Your brief says which you are; failing that, an open PR settles it.
+> **What differs between runs of this brief is whether the PR body exists.** By default you run
+> before it is drafted, so it cannot be checked — which is why the citation, the `NEWS.md`
+> exemption and a documented alignment gap are all routed to what the PR body *owes* rather
+> than to what it says. Once it exists, as a draft before the push or on the open PR after a
+> maintainer's review round, it is yours: read it, and a claim an earlier round said it owed
+> and it does not carry is a finding. Your brief says which you are; failing that, an open PR
+> settles it.
 >
 > **And every `git diff` here means the package's own tree, wherever that sits.** A wrong ref
 > fails loudly; a wrong path does not. `git diff` exits 0 on a pathspec that matches nothing,
@@ -278,10 +280,11 @@ Then verify:
   "past-tense bullet naming the affected function"** — you were briefed with that file; do not
   judge from memory, because the exemption for a purely internal PR is easy to forget and
   produces a spurious finding on a doc-only diff. The bullet is written in the implementation
-  commit, so it is already in the diff you are reading; the PR description is not drafted
-  until after you run, so it is not where you look for the exemption. What is yours: an absent
-  bullet is a finding unless the ExecPlan judged the PR purely internal — and a finding anyway
-  if the diff plainly changes behavior.
+  commit, so it is already in the diff you are reading; by default the PR description is not
+  drafted until after you run, so it is not where you look for the exemption. What is yours: an
+  absent bullet is a finding unless the ExecPlan judged the PR purely internal — and a finding
+  anyway if the diff plainly changes behavior. So is a bullet longer than one sentence, or one
+  that states a measured figure.
 - `git diff origin/main -- inst/CITATION` should normally be **empty**. If `CITATION` derives
   its version via `meta$Version` there is nothing to update; if it hard-codes the string, say
   so — that is a latent finding worth a one-line structural fix (the version-string class).
@@ -418,6 +421,9 @@ package or file, and show the rewrite.
   document the profile's § 4 **Version lives in:** names, and a bump made in the generated
   `DESCRIPTION` is a finding. NEWS normally states none: its bullets go under a development
   header that names no version, so its absence there is not a finding.
+- **Changed help pages, read whole** — for every `man/*.Rd` the diff changes, render it with
+  `tools::Rd2txt(<file>, options = list(underline_titles = FALSE))` and read it start to
+  finish, checking each argument and value entry that describes behavior this PR changed.
 - **Example runtime.** New `@examples` should run well under 5 seconds. Slow ones need
   `\donttest{}`. If an example fits a model on a non-trivial dataset, time it with
   `system.time({ ... })`.
@@ -450,7 +456,9 @@ package or file, and show the rewrite.
   ordered this way) or a **cross-reference** (that another file restates or defers to this
   one) only if it has to stay: execute a mechanism (`Rscript -e` on the pre-fix code), settle a
   cross-reference by `grep -c`. No gate reads a comment and no test asserts one, so a wrong one
-  ships and outlives everyone who could correct it.
+  ships and outlives everyone who could correct it. Propose deleting a false claim, or a
+  measurable one nobody measured, wherever it stands. Where it has to stay, say what is wrong
+  and leave the new wording to the author: a sentence you draft is a claim nobody has measured.
 
   **The subclass worth grepping for is the positional reference** — "step 10", a bare `:349`,
   "below", "inside the `tryCatch`". Where a PR wrote false claims about its own behavior, every
@@ -477,6 +485,19 @@ package or file, and show the rewrite.
   separately" when a tracker search returned nothing, and a comment claiming an issue exists is
   worse than silence: the next reader follows it with the file's authority behind it. **Flag
   any the author could have checked and didn't.**
+
+  **Coverage claims are greppable too, so grep them** over the same diff's added comment and
+  roxygen lines:
+
+      git diff origin/main -- ':(exclude)<pkg>/**' ':(exclude)docs/**' \
+        | grep -E '^\+[[:space:]]*#' \
+        | grep -E -i -w -e 'fail(s|ed)?|catch(es)?|caught|cover(s|ed)?|detects?|blind|green|mutants?|mutations?' \
+                        -e 'errors? (if|when)|goes red|redden(s|ed)?|would (show|catch|fail)|guards? the|tested (separately|elsewhere)'
+
+  Run these greps over the whole branch diff in every round, however narrowly you were briefed.
+  Read every hit. One that says what a test fails on, catches or covers is a deletion
+  candidate, not a claim to verify. One about the package's own behavior, such as a computation
+  that fails or an interval that under-covers, is not.
 - **A new `warning()` inside anything a caller wraps in `tryCatch(error = …)`.** Under
   `options(warn = 2)` every warning becomes an error, so the caller's error handler fires and
   the function returns the handler's value instead of its own — silently, with no condition
@@ -603,6 +624,7 @@ stops a half-written round from being read as a complete one.
 
     [Issues that prevent merge, numbered. Each with a precise file:line citation, a
     verbatim error message or trace, and a concrete proposed fix as a code block.
+    For a claim, the fix is its deletion, or what is wrong with it where it has to stay.
     If empty, write "None." and move on.]
 
     ## 2. Streamlining opportunities
@@ -707,8 +729,8 @@ can be elegant — and the underlying issue may still be unresolved.
 
 **A real gap in any alignment above is a blocker** — the PR's claim doesn't match its content.
 An intentional, documented gap ("partially fixes; follow-up handles the rest") is not one, and
-at your stage the plan's `Decision Log` is the only place it can be — the PR body is not
-drafted until after you run. Where the plan documents one, name it as one the PR body owes.
+at your stage the plan's `Decision Log` is the only place it can be — by default the PR body is
+not drafted until after you run. Where the plan documents one, name it as one the PR body owes.
 
 ## Escalation
 
@@ -727,8 +749,8 @@ The maintainer (or the orchestrator) needs to decide whether to abort the PR.
 
 **Convergence:** a round with no blockers and no open streamlining or robustness findings.
 Cosmetic items can be deferred. **Two rounds is typical** — round 1 surfaces issues, round 2
-catches what fixing them broke. **Three or more usually means a structural problem** that
-incremental review won't catch; flag that in your verdict.
+catches what fixing them broke. **Three or more full rounds usually means a structural
+problem** that incremental review won't catch; flag that in your verdict.
 
 **Round 2 is not a rubber stamp, because applied fixes are themselves a defect source.**
 Expect a meaningful share of round 2's findings to be things round 1's fixes created: two
@@ -770,12 +792,13 @@ states:
 So **name the coverage contract as its own finding**: what the guard promises, what it does
 not, and which evasions are deliberately left outside it. That is a decision the author owes a
 `Decision Log` entry, owed whether or not this round's assertion lands — and the contract
-itself belongs where deleting the branch folder cannot take it, the guard's own file header or
-`.workflow/PROFILE.md` § Gotchas, with the log entry recording that the decision was taken
-rather than holding the only copy. Where it went unwritten, the maintainer asked only at the
-last stage whether the newest assertions earned their keep "rather than letting the set grow by
-default" — the right question, reached after the round that could have answered it. A set with
-no contract grows by default, not by decision.
+itself belongs where deleting the branch folder cannot take it: what the guard checks in its
+own file header, and what it misses in `.workflow/PROFILE.md` § Gotchas, with the log entry
+recording that the decision was taken rather than holding the only copy. Where it went
+unwritten, the maintainer asked only at the last stage whether the newest assertions earned
+their keep "rather than letting the set grow by default" — the right question, reached after
+the round that could have answered it. A set with no contract grows by default, not by
+decision.
 
 **Confirmation rounds should be short.** If round N flagged one or two cosmetic items and the
 executor applied them, round N+1's file is long enough to state what you re-checked and what

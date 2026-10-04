@@ -160,9 +160,10 @@ body before it is posted. The name of each of those files is defined in exactly 
 brief the agent hands its subagents takes the name from there and doesn't restate it.
 Subagent working files go in a `scratch/` subdirectory apiece.
 
-A one-round cycle stops after the first response to each review, and a `_v2` on any of them
-means a second round ran. No round ever overwrites an earlier one, because the agent's own
-end-of-cycle sweep for deferred items works by grepping this folder.
+A `_v2` on a review means a second round ran. The post-execution review always has a `_v2`,
+because its last pass before the push reads the PR description draft. No round ever overwrites
+an earlier one, because the agent's own end-of-cycle sweep for deferred items works by grepping
+this folder.
 
 Because the sentinel's pre-implementation and post-implementation passes have separate names
 instead of a shared one with a suffix, a missing post pass is visible. `SKILL.md` makes that

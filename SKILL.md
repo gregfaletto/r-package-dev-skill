@@ -87,7 +87,7 @@ working around it.
 - [ ] 6. post-execution review subagent + drift sentinel (post-implementation)
   - [ ] iterate to convergence
 - [ ] 7. close the loop and open the PR
-  - [ ] disposition sweep → PR description draft → push → open PR targeting main
+  - [ ] disposition sweep → PR description draft → draft review → push → open PR targeting main
   - [ ] watch CI, and hold for green only if the profile's CI is `gating`
   - [ ] hand off per the profile's Governance field
 - [ ] 8. answer the maintainer's review round, whenever it arrives
@@ -252,7 +252,7 @@ from memory — these are the ones this step turns on:
   message as the disposition sweep.
 - **Re-derive every claim a command settles at the final commit** (criterion 17) — as a
   checklist, not a glance, and a claim about what a test *covers* is on it beside the numbers.
-  Review fixes land *after* the last review ran, so nothing else re-validates them.
+  Review fixes land *after* the last review ran, so no reviewer has checked them yet.
 - **Count the PR body** (criterion 18), and re-count after every edit to it.
 - **Decide where each durable finding goes** (criterion 19): a check, a profile gotcha, a
   lesson, or **nothing** — which is the default. Prefer a check; a lesson is what you write
@@ -263,6 +263,13 @@ Draft the body in the PR-description file
 `# Suggested title` / `# Suggested body`, rewritten to match the branch's *final* scope; pass
 only the text under `# Suggested body` to `--body-file`. Then queue and artifact upkeep —
 closed issues out of the queue doc, merged branches' `.plans/<branch>/` folders removed.
+
+**Before pushing, get the draft reviewed.** Spawn a fresh post-execution reviewer over the
+PR-description draft and every commit made after the last review pass. Brief it with the draft,
+the range of those commits, and one question: does each claim in them that a command settles
+hold at the final commit, and do its copies elsewhere agree? Its output is the post-execution
+review's next `_v#`, answered as stage 6 answers a round, and a fix it prompts gets the same
+review before the push. Every cycle owes this pass.
 
 Then push and open the PR targeting `main`.
 
@@ -362,6 +369,10 @@ drop, the post-exec pass is the only look anyone takes at what landed.
 | `AGENTS.md` / `CLAUDE.md` | persistent | **tracked, or gitignored** — see below | repo entry point; points here and at the profile |
 
 Branch `feat/s3-class-16` → folder `.plans/feat-s3-class-16/` (slashes become dashes).
+
+**`.workflow/` and `.plans/` are gitignored, so nothing in them has a history.** Copy
+`.workflow/PROFILE.md` somewhere safe before anything that removes ignored files, such as
+`git clean -x`: a deletion there is permanent.
 
 **Whether `AGENTS.md` / `CLAUDE.md` is tracked is the repo's choice, so read the repo's
 `.gitignore` before you decide which rule applies to an edit** — `references/adoption.md`,

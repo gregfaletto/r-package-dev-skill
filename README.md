@@ -154,6 +154,7 @@ and that the version is set in the source document instead of the generated `DES
       check-profile.R                       checks a repo's PROFILE.md against the template
     USAGE.md                                the human's guide — start here
     CONTRIBUTING.md                         editing the skill itself
+    CONSIDERED.md                           changes considered and set aside
 
 ## License
 

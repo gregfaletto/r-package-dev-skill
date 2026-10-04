@@ -498,8 +498,9 @@ R versions needs `RNGversion()`, or better, should not pin exact draws at all.
 Not every platform difference is a bug to fix. `skip_on_os("windows")`,
 `skip_on_cran()` (for slow or network-dependent tests), `skip_on_ci()`,
 `skip_if_not_installed()`, and `skip_if_offline()` exist for exactly this. **A skip is a
-decision that needs a reason in a comment** — an unexplained `skip_on_os()` is
-indistinguishable from a bug someone gave up on. **`skip_on_cran()` skips in almost nothing you
+decision that needs a reason in a comment**: the cause, or the issue that records it. An
+unexplained `skip_on_os()` is indistinguishable from a bug someone gave up on.
+**`skip_on_cran()` skips in almost nothing you
 run**: it reads `NOT_CRAN`, which `devtools::test()`, `devtools::check()`, and
 `r-lib/actions/setup-r` all set (devtools 2.5.2 and r-lib actions v2, 2026-08-23), so a block
 you believe is skipped for being slow runs in the fast loop, in the gate, and on every CI job

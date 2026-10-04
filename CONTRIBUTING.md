@@ -119,3 +119,10 @@ things are in it. Nothing checks the ban, and nothing should. A detector for the
 here for a while and spent more edits on its own upkeep than it ever saved. That upkeep is the
 same cost the rule exists to avoid. The rule is guidance for whoever is writing, and it costs
 nothing to state.
+
+Changes a review proposed and the maintainer set aside are in [`CONSIDERED.md`](CONSIDERED.md),
+which says how to add to them. Check it before proposing a change.
+
+`references/harness-notes.md` tells users to copy `scripts/delegation-standing-request.sh` into
+`~/.claude/hooks/`, so a change to the script reaches an existing install only when it is
+copied again. Say so in the commit message.

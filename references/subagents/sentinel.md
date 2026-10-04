@@ -111,7 +111,10 @@ covers, or what a mutation fires, standing in two or more places — a comment, 
 header, `NEWS.md`, the PR body. These are cheaper to check than a lone claim, because the
 copies can be read against each other, and **two copies that disagree are a finding without
 measuring anything**. An external pass reported one as exactly that — a comment pair, one copy
-of which was measurably false — after both in-cycle passes read this check as code only.
+of which was measurably false — after both in-cycle passes read this check as code only. Find
+the copies by grepping a short, distinctive phrase from the claim: `git grep -i` over the tree,
+`man/` and `NEWS.md` included, and a plain `grep -i` over the PR body once one exists. Search
+even when your brief names the copies, since it may not name them all.
 
 **Why it matters.** The `fetwfe` PR history is littered with copy-paste fixes that had to be
 applied to sibling files one cycle at a time: a mask expression duplicated
@@ -141,10 +144,10 @@ finding, caught one stage earlier and at a fraction of the cost. Apply the same 
 - **2+** sibling-file occurrences → **BLOCKER** (recommend extracting a helper before
   merging; if the author argues the parallel structure is intentional, escalate).
 - **A duplicated claim**, where `grep` is the right instrument: two copies that disagree →
-  **BLOCKER**, remedied by deleting the copy, not reconciling it; two that agree → **NOTE**.
-  **In `@noRd` roxygen or an ordinary comment, grade an agreeing copy WARNING rather than
-  NOTE**: neither becomes a help page read on its own, so the remedy is deletion or a pointer
-  (`@inheritParams` for a shared argument), never a third copy.
+  **BLOCKER**, remedied by deleting the duplicate, never by rewording either copy; two that
+  agree → **NOTE**. **In `@noRd` roxygen or an ordinary comment, grade an agreeing copy WARNING
+  rather than NOTE**: neither becomes a help page read on its own, so the remedy is deletion or
+  a pointer (`@inheritParams` for a shared argument), never a third copy.
 
 **BLOCKER example.** A new variance-formula helper duplicates the group-loop structure
 already present in an existing variance function. Flag: "lines X–Y of the new helper match
@@ -272,8 +275,8 @@ than its fixture:
 tolerance = 1e-8)`. Flag: "`.resid` is defined as `y - .fitted`, so this identity holds by
 construction regardless of row alignment — it is the round-trip tautology the test-discipline
 guidance explicitly warns against. The load-bearing check for `augment` is row-order
-invariance. Either delete this line or demote it to a comment marking it as an NaN guard,
-not a correctness check."
+invariance. Delete this line, or replace it with an assertion that checks for NaN directly,
+such as `expect_false(anyNA(aug$.fitted))`."
 
 **CLEAN example.** A new test adds `expect_equal(aug_shuffled$.fitted,
 aug_original$.fitted[match_idx], tolerance = 1e-8)` to lock row-order invariance. Exactly

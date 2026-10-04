@@ -33,3 +33,18 @@ Before you finish, run `Rscript scripts/check-docs.R` and `Rscript scripts/check
 plus `Rscript scripts/check-fields.R` if you touched an instruction or
 `templates/PROFILE.md`. What each list in their output obliges you to do is in
 [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+Before proposing a change to the skill, check [`CONSIDERED.md`](CONSIDERED.md) for it.
+
+Commit as you go. Push, change the repo's settings, or do anything else outward-facing only
+when the maintainer asks. The maintainer also edits files on GitHub's website, so fetch and
+check `git status -sb` before you edit or push.
+
+If a `LOCAL.md` exists at the repo root, read it. It is gitignored, and it records facts about
+this machine's install, such as where the skill is installed and which installed files are
+copies.
+
+Don't keep instructions or facts about this skill in an agent's memory feature. What an agent
+needs to use the skill belongs in `SKILL.md` and `references/`, what it needs to edit the skill
+belongs in this file or `CONTRIBUTING.md`, and what is specific to one machine belongs in
+`LOCAL.md`.

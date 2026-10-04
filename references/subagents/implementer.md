@@ -112,15 +112,19 @@ A comment is unchecked text in a checked file: no gate reads one and no test ass
 wrong one ships and outlives whoever could have corrected it. Every rule here says write less.
 **These rules govern roxygen too**, `@noRd` roxygen no more loosely than an ordinary comment:
 it never becomes a help page read on its own. In `@noRd` roxygen, point at a sibling's
-`@param` with `@inheritParams` rather than restating its description.
+`@param` with `@inheritParams` rather than restating its description. **These rules outrank the
+plan.** Where the plan prescribes comment or roxygen text that breaks one, leave out what
+breaks it, and say in your report's comment-rules item which plan step prescribed it.
 
 - **No measured figure or coverage claim in a comment.** A number you measured, a count, "this
   block reddens under X" — if one is load-bearing, pin it in a test and name that test in the
   comment rather than restate the figure; if it is not, don't write it. A `45` and a `1e-17`
   that lived only in cssr comments both went stale, and a fetwfe file states an `att_var_1`
-  and a `max diag(Sigma_1)` nothing under `tests/` holds. *Measured* scopes the rule: an
-  analytic derivation, a literal the comment explains, and an equation, lemma, section or
-  issue number all derive or address rather than measure, so a one-line citation is fine.
+  and a `max diag(Sigma_1)` nothing under `tests/` holds. *Measured* scopes the figure half of
+  the rule: an analytic derivation, a literal the comment explains, and an equation, lemma,
+  section or issue number all derive or address rather than measure, so a one-line citation is
+  fine. A coverage claim is out whether you measured it or derived it: say what an assertion
+  checks, never what it fails or errors on, catches, or would show.
 - **A fact lives in one place; a second copy cites it rather than restating it.**
 - **No correction history and no directives to the next editor.** Git holds history: "this said
   X until the #482 round" belongs in the commit message that changed it, and so does "do not
