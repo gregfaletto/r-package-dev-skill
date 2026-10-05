@@ -115,9 +115,7 @@ the document generates the package. [cssr](https://github.com/gregfaletto/cssr-p
 built this way.
 
 The skill works with litr packages, and [`guides/litr.md`](guides/litr.md) covers what changes
-for them. The main difference is that the agent edits only the source document, since the next
-build overwrites the generated package. Instead of a `load_all()` loop, the agent rebuilds the
-package. A green build also means the tests woven into the document passed. The gate runs on
+for them. The main difference is that the agent edits only the source document, since the package is generated from it. A full build also runs the tests woven into the document, so a green build means they passed. The gate runs on
 the generated package directory, and the profile records the build command, the gate's flags,
 and that the version is set in the source document instead of the generated `DESCRIPTION`.
 
