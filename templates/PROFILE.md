@@ -124,13 +124,15 @@ budgeted against a *current* measurement, not this line as written months ago.
 
 **Generated / literate package (litr or similar).** The single source of truth is
 `<source>.Rmd`; the package tree `<pkg>/**` and the site `docs/**` are **generated — never
-hand-edit them**, your edit is overwritten on the next build. Tests are woven into the source
-too. Build with:
+hand-edit them**. litr refuses to build over a package that no longer matches the `LitrId` in
+its `DESCRIPTION`. A build that deletes `<pkg>/` first skips that check and erases a hand edit
+silently, and so does `litr::load_all()`. Tests are woven into the source too. Build with:
 
-    <command>          # give it a ~N-minute timeout; it deletes <pkg>/ first
+    <command>          # give it a ~N-minute timeout; say if it deletes <pkg>/ first
 
-**A green build means every woven test passed** — the renderer executes each test chunk.
-Before each run, clear the intermediates: `rm -rf <intermediates>`.
+**A green full build means every woven test passed** — the renderer executes each test chunk. A
+quick build, such as `litr::load_all()`, is not a test run. Before each run, clear the
+intermediates, but not `<pkg>/` itself: `rm -rf <intermediates>`.
 
 ## 3. The gate — exact commands
 

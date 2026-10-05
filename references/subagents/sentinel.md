@@ -35,13 +35,12 @@
 > extracts too, so every command here takes that subdirectory as its argument, and the test
 > command is the profile's rather than the `devtools::test(filter = …)` written here.
 >
-> **A profile saying there is no `load_all()` fast loop is not saying you cannot load the
-> archive.** It is saying the package there is *generated* — built from a source document that
-> also carries the tests — so in the working tree you would have to render before you could
-> load anything. The archive hands you the last build's output already committed, a whole
-> package with its own `DESCRIPTION`, `R/` and `tests/`, so loading and testing *that* is
-> exactly right. Getting this wrong is not always loud: a mutation battery run outside the
-> package reports a suite that never moved, which reads exactly like a guard that survived.
+> **A generated package still loads from the archive.** It is built from a source document that
+> also carries the tests, so in the working tree a load reflects the source only after a
+> render. The archive hands you the last build's output already committed, a whole package with
+> its own `DESCRIPTION`, `R/` and `tests/`, so loading and testing *that* is exactly right.
+> Getting this wrong is not always loud: a mutation battery run outside the package reports a
+> suite that never moved, which reads exactly like a guard that survived.
 
 ---
 

@@ -49,9 +49,10 @@ replacement for an agent: the filter is a regex matched against test file names 
 Keep a smoke snippet handy — the profile names one for the repo — and re-run it whenever
 you want feedback.
 
-**Generated / literate packages differ** — no `load_all()` loop, and a green build is itself
-a test result. The build command and its clear-the-intermediates prelude are in the profile's
-§ 2.
+**Generated / literate packages differ** — you rebuild from the source document instead of
+reloading, and a full build is itself a test result, which a quick one such as
+`litr::load_all()` is not. The build command and its clear-the-intermediates prelude are in the
+profile's § 2.
 
 ## The per-PR CRAN gate
 

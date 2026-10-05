@@ -98,10 +98,10 @@ post-execution review diffs `NEWS.md` against `origin/main` before any PR exists
 The package sits on a development version (`1.2.0.9000`) between releases. If it is still on a
 plain released version, bump `DESCRIPTION` to `<released>.9000` once and open the development
 header; otherwise leave the version alone. If the profile's § 4 **Version lives in:** names
-another file, edit that one instead: a generated package's `DESCRIPTION` is build output and
-loses the bump on the next build. The release number is chosen and the header finalized **at
-submission time**. If `inst/CITATION` derives its version via `meta$Version`, there is nothing
-to update there at all.
+another file, edit that one instead: a generated package's `DESCRIPTION` is build output, so a
+bump there is refused or lost at the next build. The release number is chosen and the header
+finalized **at submission time**. If `inst/CITATION` derives its version via `meta$Version`,
+there is nothing to update there at all.
 
 If the PR is purely internal — a refactor with no user-visible change, a doc fix, dev
 tooling — no NEWS entry or bump is needed, but say so in the ExecPlan, which is what the
@@ -324,13 +324,12 @@ intended change and merges cleanly. Do **not** delete the mis-targeted base bran
 the corrective PR lands; it is the only on-GitHub record of the merge.
 
 **Landing a batch of parallel PRs in a generated-artifact repo.** PRs opened off the same
-default branch conflict pairwise whenever each rebuild regenerates the whole tree, even
-when their *source* changes are disjoint. **The source auto-merges; only derived files
-conflict — so never hand-merge a generated file.** Merge the base, clear the conflict
-markers in the generated tree (its content is about to be overwritten), rebuild from the
-merged source, and commit that. Do this bottom-up, one branch at a time, so each subsequent
-rebuild carries the prior fixes. **Merge-then-rebuild, not rebase** — rebasing replays each
-commit and re-conflicts the generated tree repeatedly.
+default branch conflict pairwise whenever each rebuild regenerates the whole tree, even when
+their *source* changes are disjoint. **The source auto-merges; only derived files conflict — so
+never hand-merge a generated file.** Merge the base, clear the conflict markers in the
+generated tree, rebuild from the merged source, and commit that. Do this bottom-up, one branch
+at a time, so each subsequent rebuild carries the prior fixes. **Merge-then-rebuild, not
+rebase** — rebasing replays each commit and re-conflicts the generated tree repeatedly.
 
 **`gh pr merge --delete-branch` fails when `main` is checked out in a worktree** (it tries
 to update local `main` and aborts). That can leave the *remote* branch undeleted — drop

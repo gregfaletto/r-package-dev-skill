@@ -8,6 +8,7 @@ point for your own profile's Gotchas, derive what you can, and date what you mea
 
 - [What changes in the process](#what-changes-in-the-process)
 - [The failure mode that costs the most time](#the-failure-mode-that-costs-the-most-time)
+- [When litr refuses to build](#when-litr-refuses-to-build)
 - [Fixtures](#fixtures)
 - [Landing concurrent PRs](#landing-concurrent-prs)
 - [What goes in your profile](#what-goes-in-your-profile)
@@ -16,29 +17,51 @@ point for your own profile's Gotchas, derive what you can, and date what you mea
 
 ## What changes in the process
 
-**There is no `load_all()` fast loop.** You rebuild. The profile's § 2 records the build
-command and its clear-the-intermediates prelude.
+**You rebuild instead of reloading.** `devtools::load_all()` on the generated tree loads the
+last build, not your edit to the source. The profile's § 2 records the build command and its
+clear-the-intermediates prelude.
 
-**A green build means the woven tests passed**, because the renderer executes each test chunk
-during the render. That changes what a green run is evidence *of* — it is a test result, not
-just a successful build.
+**A green full build means the woven tests passed**, because the renderer executes each test
+chunk during the render. That changes what a green run is evidence *of* — it is a test result,
+not just a successful build. A quick build says nothing about the tests. `litr::load_all()`
+renders with `minimal_eval = TRUE`, which evaluates only the chunks whose code mentions a
+usethis function or `litr::document()`, so a woven test runs only if it happens to mention one.
+It builds in a temporary copy and then copies the result over the package directory in your
+working tree, which skips litr's check for hand edits (next paragraph) and overwrites them. Use
+the full build in this workflow. Checked on litr 0.9.3 by reading `litr::load_all` and
+`litr:::setup` (2026-10-04).
 
 **Never hand-edit the generated tree.** The package directory and any generated site are
-output. An edit there is overwritten on the next build, silently.
+output. litr guards the package: `<pkg>/DESCRIPTION` records a `LitrId` fingerprint of every
+file in the package, and `litr::render()` refuses to build over a package directory that no
+longer matches it. Once the check passes, litr deletes and regenerates the directory itself. So
+a build script that deletes the package directory first turns the check off, and the next build
+then erases a hand edit silently. `litr::load_all()` skips the check too. To run the check
+yourself, call the internal `litr:::check_unedited("<pkg>")`. On litr 0.9.3 it returned `TRUE`
+on a built package and `FALSE` after a one-line edit to an `R/` file (2026-10-04).
+
+**A fresh checkout can fail that check with no edit at all.** `litr::add_readme()` calls
+`usethis::use_readme_rmd()`, which, in a git repo, writes a hook to
+`<pkg>/.git/hooks/pre-commit`. Git never commits anything under a `.git` directory, but the
+fingerprint covers every file in the package, hidden ones included. So a fresh clone or
+worktree fails the check and the build stops. Deleting that one file during the build, after
+`litr::add_readme()` runs, should keep it out of the fingerprint, which litr takes after the
+last chunk runs. That fix is untested so far. Delete only that file, only if it exists, and
+never a `.git` directory. Measured with litr 0.9.3 and usethis 3.2.1 (2026-10-04).
 
 **`devtools::check()` on the generated subdirectory needs `document = FALSE`.** A plain check
 re-runs roxygen and rewrites the generated man-page headers, corrupting the diff. Note this
 applies to `devtools::check()` specifically — `R CMD check` never documents, so do **not**
 carry the flag into a CI workflow. *(Reported, not independently reproduced.)*
 
-**The formatter may be no step at all.** `air` does not format `.Rmd` — measured on air
-0.9.0: it rewrote `y<-c(1,2,3)` in a `.R` file and left the identical line inside an `.Rmd`
-chunk untouched (2026-09-04). So running it at the repo root reaches only the generated tree,
-where the next build discards the result, while the source of truth stays unformatted. A litr
-repo may therefore record its profile's **Formatter** command as `none` and match the
-source's indentation by hand. That is a property of the toolchain, not a lapse in discipline,
-and it is why a repo-local `air.toml` does not rescue it: pinning the style only makes the
-wrong target deterministic.
+**The formatter may be no step at all.** `air` does not format `.Rmd` — measured on air 0.9.0:
+it rewrote `y<-c(1,2,3)` in a `.R` file and left the identical line inside an `.Rmd` chunk
+untouched (2026-09-04). So running it at the repo root reaches only the generated tree, where
+its changes are hand edits that the next build refuses or discards, while the source of truth
+stays unformatted. A litr repo may therefore record its profile's **Formatter** command as
+`none` and match the source's indentation by hand. That is a property of the toolchain, not a
+lapse in discipline, and it is why a repo-local `air.toml` does not rescue it: pinning the
+style only makes the wrong target deterministic.
 
 ## The failure mode that costs the most time
 
@@ -59,7 +82,26 @@ names the offending chunk. Each failed build costs a full render, so isolate bef
 re-running.
 
 The same symptom follows an interrupted or timed-out build, which leaves stale intermediates
-behind. Clear them before each run.
+behind. Clear them before each run, but not the package directory:
+[When litr refuses to build](#when-litr-refuses-to-build) covers that one.
+
+## When litr refuses to build
+
+litr refuses when the package directory no longer matches its fingerprint. Its message suggests
+renaming or deleting the directory, but first run `git status --porcelain --ignored -- <pkg>`.
+It lists the files there that git cannot restore: output from an interrupted build, a merge or
+`litr::load_all()`, a hand edit, or a stray file such as `.Rhistory`, which the fingerprint
+counts too. It never lists anything under `<pkg>/.git/`. Read what it lists, move any hand edit
+into the source, then delete the directory and rebuild.
+
+If it lists nothing, the mismatch is in something git does not show or in the committed tree
+itself: the `<pkg>/.git/hooks/pre-commit` file that `litr::add_readme()` writes, line endings
+that git converted on checkout, or a hand edit or an unrebuilt merge that was committed.
+Rebuilding in place would silently revert such a commit. So first make a clean checkout of
+`HEAD` somewhere disposable, such as with `git worktree add <dir> HEAD`, delete the package
+directory there, build, and diff its `<pkg>/` against yours. If they differ only in that hook
+file and the `LitrId` line, delete the package directory and rebuild in place. Anything else is
+a finding for the maintainer, unless a no-op rebuild produces it too.
 
 ## Fixtures
 
@@ -78,7 +120,9 @@ function can fail in a bare weave, where there is no package context. Guard it w
 
 Covered in [git-and-pr.md](../references/git-and-pr.md#gotchas-learned-the-hard-way): the
 source auto-merges, only derived files conflict, and the resolution is to rebuild from the
-merged source rather than hand-merge anything generated.
+merged source rather than hand-merge anything generated. A merged tree rarely matches its
+fingerprint, so expect litr to refuse that rebuild, and handle it as
+[When litr refuses to build](#when-litr-refuses-to-build) describes.
 
 One thing worth measuring for your own profile: **whether a no-op rebuild is byte-identical.**
 On one package it is — the build id is a content hash, not a nonce — so only the site dirties,

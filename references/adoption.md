@@ -180,7 +180,7 @@ judgement; its failures do not.
 ## Generated / literate packages
 
 If the package is built from a source document rather than edited directly in `R/`, the build
-model changes the process and not just the commands — no fast loop, a green build that is
-itself a test result, a generated tree you must never hand-edit, and a build-abort symptom
-that points at the wrong file. **See [guides/litr.md](../guides/litr.md)** before filling in
-§§ 2, 3, and 12.
+model changes the process and not just the commands — a rebuild where you would reload, a full
+build that is itself a test result, a generated tree you must never hand-edit, and a
+build-abort symptom that points at the wrong file. **See [guides/litr.md](../guides/litr.md)**
+before filling in §§ 2, 3, and 12.
