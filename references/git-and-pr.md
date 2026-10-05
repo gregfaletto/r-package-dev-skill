@@ -119,7 +119,10 @@ modified files, stage and commit those changes before pushing.
 git push -u origin <branch-name>
 ```
 
-Link the issue with `Resolves #N` — or `Refs #N` if it's a partial resolution.
+Link the issue with `Resolves #N` — or `Refs #N` if it's a partial resolution. A closing
+keyword reaches only the number right after it: `Closes #376, #377` closes #376 and leaves
+#377 open, so write `Closes #376, closes #377`. When a `Refs #N` PR turns out to finish the
+issue, close it by hand; nothing else will.
 
 ## PR description workflow
 
