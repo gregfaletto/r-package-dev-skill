@@ -50,7 +50,7 @@ last chunk runs. That fix is untested so far. Delete only that file, only if it 
 never a `.git` directory. Measured with litr 0.9.3 and usethis 3.2.1 (2026-10-04).
 
 **`devtools::check()` on the generated subdirectory needs `document = FALSE`.** A plain check
-re-runs roxygen and rewrites the generated man-page headers, corrupting the diff. Note this
+can re-run roxygen and rewrite the generated man-page headers, corrupting the diff. Note this
 applies to `devtools::check()` specifically — `R CMD check` never documents, so do **not**
 carry the flag into a CI workflow. *(Reported, not independently reproduced.)*
 

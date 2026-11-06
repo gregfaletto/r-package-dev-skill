@@ -182,7 +182,7 @@ and not the other. Zero and zero is the goal and a common, correct answer.
     SKIP  <n> under <test command>, <n> under <check command>
 
 Note any mandatory flags and *why*. For example: a litr package must pass `document = FALSE`
-to `check`, because a plain check rewrites every man-page header and corrupts the diff.
+to `check`, because a plain check can rewrite every man-page header and corrupt the diff.
 
 ## 4. Version bookkeeping
 
