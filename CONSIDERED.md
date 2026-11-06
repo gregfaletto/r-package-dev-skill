@@ -88,3 +88,11 @@ or set a budget. Proposed because #493's cycle reached the account's weekly usag
 aside because each option gives a subagent less to work from.
 
 - 2026-10-01, PR #493
+
+## Reading imports from `NAMESPACE`
+
+Say that a check or recipe listing imports should flatten `parseNamespaceFile()$imports` rather
+than grep, because roxygen2 8.1.0 and later write one multi-line `importFrom()` per package.
+Set aside because nothing in the skill reads those lines, and nothing in fetwfe did either.
+
+- 2026-11-06, gregfaletto/r-package-dev-skill#2
