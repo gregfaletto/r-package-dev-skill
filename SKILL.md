@@ -266,8 +266,9 @@ closed issues out of the queue doc, merged branches' `.plans/<branch>/` folders 
 
 **Before pushing, get the draft reviewed.** Spawn a fresh post-execution reviewer over the
 PR-description draft and every commit made after the last review pass. Brief it with the draft,
-the range of those commits, and one question: does each claim in them that a command settles
-hold at the final commit, and do its copies elsewhere agree? Its output is the post-execution
+the range of those commits, and these questions: does each claim in them that a command
+settles hold at the final commit, do its copies elsewhere agree, and does any of the text break
+[§ Public text](references/git-and-pr.md#public-text)? Its output is the post-execution
 review's next `_v#`, answered as stage 6 answers a round, and a fix it prompts gets the same
 review before the push. Every cycle owes this pass.
 
@@ -448,3 +449,7 @@ guessing at it is the failure.
   one is a decision to confirm with the maintainer, not a convenience.
 - **Never add to the public API "just in case."** For a CRAN package, an export is a
   one-way door.
+- **Never name a private person or quote private correspondence in public text.** Issues, PRs,
+  comments, commit messages and tracked files are public under the maintainer's name, and an
+  edit does not undo a slip. The rule is in
+  [references/git-and-pr.md](references/git-and-pr.md#public-text).

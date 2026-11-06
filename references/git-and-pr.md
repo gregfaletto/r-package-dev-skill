@@ -6,6 +6,7 @@
 - [While working](#while-working)
 - [When ready to submit](#when-ready-to-submit)
 - [PR description workflow](#pr-description-workflow)
+- [Public text](#public-text)
 - [PR description style](#pr-description-style)
 - [Branches and PRs are the default — always](#branches-and-prs-are-the-default--always)
 - [Gotchas learned the hard way](#gotchas-learned-the-hard-way)
@@ -157,6 +158,24 @@ gh pr create --base main --title "Add ridge fallback for rank-deficient design" 
 
 Sanity-check after opening: `gh pr view <n> --json body -q .body | head -3` — it must not
 start with `# Suggested title`.
+
+## Public text
+
+Issues, PR bodies, comments, commit messages and tracked files such as `cran-comments.md` are
+public, and they carry the maintainer's name. An edit does not remove a slip: GitHub keeps each
+earlier revision of an issue or PR body readable until someone deletes it from the edit
+history, so a slip needs both.
+
+- **Name no private person.** Write "CRAN", not who at CRAN, and paraphrase correspondence
+  rather than quoting it. Repository slugs and links, the authors of a cited paper, a package's
+  `Authors@R`, `@author` and `LICENSE` entries, and a contributor's GitHub handle credited in
+  `NEWS.md` are not covered.
+- **In PR bodies and replies, address the maintainer as "you"**, and never name them in the
+  third person.
+- **A PR reply states what changed and in which commit, or why nothing did,** with no counts,
+  gate output or review history unless asked.
+- **One test decides what stays in a NEWS line, a commit message or a PR reply:** would the
+  reader act differently without this sentence? If not, leave it out.
 
 ## PR description style
 
