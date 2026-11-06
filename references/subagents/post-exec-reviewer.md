@@ -277,7 +277,7 @@ of it.** One cycle raised `Depends: R (>= 4.4.0)` and left `cran-comments.md` de
 Then verify:
 
 - `git diff origin/main -- NEWS.md`. **The rule is in `git-and-pr.md` — search it for
-  "past-tense bullet naming the affected function"** — you were briefed with that file; do not
+  "present-tense bullet saying what now happens"** — you were briefed with that file; do not
   judge from memory, because the exemption for a purely internal PR is easy to forget and
   produces a spurious finding on a doc-only diff. The bullet is written in the implementation
   commit, so it is already in the diff you are reading; by default the PR description is not
