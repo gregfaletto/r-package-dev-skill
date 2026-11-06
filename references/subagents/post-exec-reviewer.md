@@ -642,7 +642,7 @@ stops a half-written round from being read as a complete one.
 
     ## 4. Cosmetic
 
-    [Style nits, naming nits. Should be done, no urgency.]
+    [Style nits, naming nits. Optional, and none holds the push.]
 
     ## 5. Verifications I performed
 
@@ -673,8 +673,9 @@ Use these levels honestly.
 - **Robustness / clarity.** Works today, may break under specific inputs, or lacks
   validation, or is harder to read than necessary. Fix before merge, not catastrophic if
   missed.
-- **Cosmetic.** Formatting, naming nits, NEWS bullet phrasing. Worth flagging, never worth
-  blocking.
+- **Cosmetic.** Formatting, naming nits, NEWS phrasing no rule decides. Worth flagging, never
+  worth blocking. In prose, anything that is not false, unsupported, or against a rule these
+  files state is cosmetic, and it holds no push.
 
 **If uncertain whether something is blocking or merely streamlining, classify it one level
 less severe than your gut says and explain the uncertainty.** The maintainer's review is

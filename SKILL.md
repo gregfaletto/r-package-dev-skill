@@ -266,11 +266,12 @@ closed issues out of the queue doc, merged branches' `.plans/<branch>/` folders 
 
 **Before pushing, get the draft reviewed.** Spawn a fresh post-execution reviewer over the
 PR-description draft and every commit made after the last review pass. Brief it with the draft,
-the range of those commits, and these questions: does each claim in them that a command
-settles hold at the final commit, do its copies elsewhere agree, and does any of the text break
+the range of those commits, and these questions: does each claim in them that a command settles
+hold at the final commit, do its copies elsewhere agree, and does any of the text break
 [§ Public text](references/git-and-pr.md#public-text)? Its output is the post-execution
 review's next `_v#`, answered as stage 6 answers a round, and a fix it prompts gets the same
-review before the push. Every cycle owes this pass.
+review before the push, unless it only deletes a true sentence nobody needed. Deleting a false
+claim still gets the review, because its copies may survive. Every cycle owes this pass.
 
 Then push and open the PR targeting `main`.
 
@@ -293,8 +294,9 @@ changes land on nearly every non-trivial PR, and the commits that answer them ar
 *after* every review pass in this cycle has already run. Work them on the same branch:
 
 - **Address the comments there** — one commit per point, and say what you did on each thread,
-  including the ones you are disagreeing with and why. Never a new branch, never a force-push
-  over what the maintainer was reading.
+  including the ones you are disagreeing with and why, in the form
+  [§ Public text](references/git-and-pr.md#public-text) gives. Never a new branch, never a
+  force-push over what the maintainer was reading.
 - **Re-run the per-PR CRAN gate.** It does not downshift here either.
 - **Re-derive every claim a command settles at the new final commit** (criterion 17).
   Everything in the PR body was measured at a commit that is no longer the tip; re-count the
