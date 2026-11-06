@@ -410,6 +410,7 @@ issue tracker, not in a process doc.
 | **[references/subagents/post-exec-reviewer.md](references/subagents/post-exec-reviewer.md)** | Briefing the post-execution reviewer |
 | **[guides/periodic-review.md](guides/periodic-review.md)** | Running the quarterly codebase sweep — occasional, opt-in |
 | **[guides/litr.md](guides/litr.md)** | Only if the package is built from a source document rather than `R/` |
+| **[guides/blas-failures.md](guides/blas-failures.md)** | CRAN reports a failure on an alternative BLAS, or before submitting a package whose tests compare separately computed results |
 | **[references/object-systems.md](references/object-systems.md)** | Any work touching classes, methods, dispatch, or validators — S3, S4, R6, or S7 |
 | **[references/harness-notes.md](references/harness-notes.md)** | Once per session, before spawning any subagent — how your harness spawns them, the absolute-path rule, and the known harness bugs |
 | **[references/lessons.md](references/lessons.md)** | Something surprising just happened; or pre-empting known failure modes in a plan |

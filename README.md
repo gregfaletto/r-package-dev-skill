@@ -142,8 +142,10 @@ document instead of the generated `DESCRIPTION`.
     guides/
       periodic-review.md                    the quarterly codebase sweep — occasional
       litr.md                               only for packages built from a source document
+      blas-failures.md                      when CRAN reports a failure on an alternative BLAS
     templates/
       PROFILE.md                            the per-repo contract (a form, not anyone's answers)
+      mkl-emulator.R                        varies summation order to expose exact comparisons
     scripts/
       install.sh                            symlink into your agent's skills dir
       bootstrap-repo.sh                     scaffold a repo
