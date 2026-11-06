@@ -168,8 +168,8 @@ history, so a slip needs both.
 
 - **Name no private person.** Write "CRAN", not who at CRAN, and paraphrase correspondence
   rather than quoting it. Repository slugs and links, the authors of a cited paper, a package's
-  `Authors@R`, `@author` and `LICENSE` entries, and a contributor's GitHub handle credited in
-  `NEWS.md` are not covered.
+  authorship records (`Authors@R`, `@author`, `LICENSE` and the like), and a contributor's
+  GitHub handle credited in `NEWS.md` are not covered.
 - **In PR bodies and replies, address the maintainer as "you"**, and never name them in the
   third person.
 - **A PR reply states what changed and in which commit, or why nothing did,** with no counts,

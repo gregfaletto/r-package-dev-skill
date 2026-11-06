@@ -20,8 +20,8 @@ on plain numerics, so it misses anything that depends on LAPACK or on another pa
   it off.
 - **Run it more than once.** Which lines fail depends on the call counter, so repeat it with
   different values of `MKL_EMUL_START`. A line that stays green is unproven, not safe.
-- **Expect more failures than CRAN reported.** Every exact comparison between separately
-  computed results is at risk, and one CRAN run shows only the ones that moved that day.
+- **Expect more failures than CRAN reported.** Any exact comparison of a result that is not
+  exact by construction is at risk, and one CRAN run shows only the ones that moved that day.
 
 **R-hub's `mkl` platform.** A green job counts as evidence about MKL only when a control ran
 the unpatched code beside it, on the same image and actions, and failed on the comparisons the

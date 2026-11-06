@@ -443,13 +443,14 @@ fail on another platform.
   Intel lists
   [array alignment](https://www.intel.com/content/www/us/en/docs/onemkl/developer-guide-windows/2025-1/obtaining-numerically-reproducible-results.html)
   among the things that change MKL's order of operations. **Exactness is legitimate and worth
-  keeping only for** integer, logical or pass-through values, an RNG stream, the same
-  computation run twice when it uses no BLAS or LAPACK (`lm()` and `qr()` use BLAS: LINPACK's
-  `dqrdc2` calls it), or a degenerate branch where a matrix is exactly the identity so every
-  cross term is exactly zero. Before writing an exact comparison, ask which you have; before
-  widening one, ask the same, because widening a real invariant deletes a guard. To find them,
-  search for `identical(`, `tolerance = 0`, `==` or `!=` inside `expect_true()` or
-  `expect_false()`, and `stopifnot()`, and read each hit for a BLAS or LAPACK dependency.
+  keeping only for** integer, logical or pass-through values that round-off cannot change, a
+  raw RNG stream, the same computation run twice when it uses no BLAS or LAPACK (`lm()` and
+  `qr()` use BLAS: LINPACK's `dqrdc2` calls it), or a degenerate branch where a matrix is
+  exactly the identity so every cross term is exactly zero. Before writing an exact comparison,
+  ask which you have; before widening one, ask the same, because widening a real invariant
+  deletes a guard. To find them, search for `identical(`, `tolerance = 0`, `==` or `!=` inside
+  `expect_true()` or `expect_false()`, and `stopifnot()`, and read each hit for a BLAS or
+  LAPACK dependency.
 - **When an exact comparison was a refactor's only guard, replace it with a behavioral
   check.** `testthat::with_mocked_bindings()` makes the shared helper add a large offset, and
   the callers' output must carry it. A structural check that reads the callers' code needs a
