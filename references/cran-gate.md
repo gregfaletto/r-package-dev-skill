@@ -421,9 +421,10 @@ This is why CI is worth more than a longer local gate: **a green check on your m
 evidence about one platform, one R version, and one BLAS.** The following fail only elsewhere.
 
 **Numeric tolerance across BLAS implementations.** The single most common cross-platform
-failure for a statistical package. macOS links Accelerate, Linux typically OpenBLAS or
-reference BLAS, and they differ in the last few digits of any matrix decomposition. A test
-that passes locally at `expect_equal(x, y)` can fail on another platform.
+failure for a statistical package. CRAN's macOS build links R's reference BLAS unless the user
+swaps in Accelerate, Linux typically OpenBLAS or reference BLAS, and they differ in the last
+few digits of any matrix decomposition. A test that passes locally at `expect_equal(x, y)` can
+fail on another platform.
 
 - `expect_identical()` on computed doubles is **wrong** — it is exact. Use `expect_equal()`,
   which under testthat 3e compares via waldo at ~1.5e-8 (`sqrt(.Machine$double.eps)`).
@@ -537,7 +538,7 @@ Say so, once, as a suggestion — not as work you fold into the current PR. For 
 with numerically-sensitive tests, `usethis::use_github_action("check-standard")` is the
 cheapest available defense. Know what it actually covers — **five jobs, not nine**:
 macOS/release, Windows/release, and Ubuntu at devel, release, and oldrel-1. So it does cover
-the BLAS axis (Accelerate vs OpenBLAS), but **oldrel and R-devel are tested on Ubuntu only** —
+the BLAS axis (macOS vs Ubuntu; no MKL), but **oldrel and R-devel are tested on Ubuntu only** —
 add rows if you need macOS-oldrel or Windows-devel. **A stock workflow also holds a lower bar
 than the local gate**: `r-lib/actions/check-r-package` defaults `error-on` to `'"warning"'`, so
 it goes green on a PR that introduces a NOTE unless the check step passes `error-on: '"note"'`.
