@@ -466,26 +466,32 @@ that passes locally at `expect_equal(x, y)` can fail on another platform.
 to know before choosing one:
 
 - **Which edition is running.** No `Config/testthat/edition` field in `DESCRIPTION` means
-  **edition 2** (`all.equal`), not edition 3 (`waldo`), and they disagree: at
-  `tolerance = 1e-4`, `expect_equal(1e-3 * (1 + 1e-3), 1e-3)` **passes** under edition 2 and
-  **fails** under edition 3. The edition also changes **`expect_error`'s control flow**: on a
-  message mismatch edition 3 re-raises and aborts the rest of the `test_that` block, while
-  edition 2 records the failure and continues — so it decides red-side *counts*, not only
-  tolerances. **A scratch directory has no `DESCRIPTION`, so measuring test behavior outside
-  a package silently gives you edition 2.** Check the field before reasoning about a
+  **edition 2** (`compare()`, which starts from `all.equal`), not edition 3 (`waldo`), and they
+  disagree: at `tolerance = 1e-4`, `expect_equal(1e-3 * (1 + 1e-3), 1e-3)` **passes** under
+  edition 2 and **fails** under edition 3. The edition also changes **`expect_error`'s control
+  flow**: on a message mismatch edition 3 re-raises and aborts the rest of the `test_that`
+  block, while edition 2 records the failure and continues — so it decides red-side *counts*,
+  not only tolerances. **A scratch directory has no `DESCRIPTION`, so measuring test behavior
+  outside a package silently gives you edition 2.** Check the field before reasoning about a
   tolerance or a count, and name the edition you measured at: a correct measurement taken at
   the wrong edition refutes a correct finding, and costs a full round-trip to unpick.
 - **The relative/absolute switch.** Under both editions `expect_equal(1e-3 + 9e-3, 1e-3,
   tolerance = 1e-2)` **passes** — a 900% error at a nominal 1e-2 tolerance — because
   `all.equal` falls back to absolute difference when the expected value is small. Packages
   whose quantities are small (standard errors, elasticity-scale effects, coefficients a
-  penalty sets to zero) live in that regime by default, not as a corner case.
+  penalty sets to zero) live in that regime by default, not as a corner case. Edition 2 adds a
+  second fallback: when `all.equal` fails on a numeric vector or matrix, `compare.numeric()`
+  still passes if every element satisfies `abs(x - y) < tolerance`, so values below 1 admit
+  more than the nominal relative tolerance. That is why the edition example above passes. A
+  data frame, a list or a classed vector goes through `compare.default()`, which is
+  `all.equal` alone, so one value can pass as a scalar and fail as a data-frame column.
 
 So: **measure what the assertion actually accepts at your values** rather than reasoning
 about units. Perturb the expected value until it fails, and record the band. Note that
 `all.equal.numeric` defaults to `countEQ = FALSE`, which averages over only the *differing*
 entries — so a single bad element is not diluted across the vector, and the effective guard
-is tighter than a naive reading suggests.
+is tighter than a naive reading suggests. Edition 2's elementwise fallback undoes that for
+values below 1.
 
 **Locale-dependent ordering.** `sort()` and `order()` on character vectors follow the
 collation locale: `C` and `en_US.UTF-8` order case differently, so a test asserting a
