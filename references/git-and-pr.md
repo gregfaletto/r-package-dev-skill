@@ -57,8 +57,8 @@ the ExecPlan's `Purpose / Big Picture`. **Do not start coding without it.**
 
 **3. Commit small and often.** Each time the check is green, commit. One logical unit per
 commit; don't bundle unrelated changes. If you edited roxygen
-tags, stage the regenerated `man/*.Rd` and `NAMESPACE` in the same commit so docs and source
-stay in sync.
+tags, stage what `document()` regenerated, `DESCRIPTION` included, in the same commit so docs
+and source stay in sync.
 
 **Re-check the branch immediately before every commit:**
 

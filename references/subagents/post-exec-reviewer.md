@@ -288,8 +288,9 @@ Then verify:
 - `git diff origin/main -- inst/CITATION` should normally be **empty**. If `CITATION` derives
   its version via `meta$Version` there is nothing to update; if it hard-codes the string, say
   so — that is a latent finding worth a one-line structural fix (the version-string class).
-- `git diff origin/main -- NAMESPACE` is consistent with the roxygen `@export` tags added
-  or removed. If they disagree, the executor forgot `document()`.
+- `git diff origin/main -- NAMESPACE` is consistent with the roxygen `@export`, `@importFrom`
+  and S3 tags changed, or with a roxygen2 update. If they disagree, the executor forgot
+  `document()`.
 
 ### 4. Trace each non-trivial new function and test
 

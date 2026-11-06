@@ -72,7 +72,7 @@ Then from an R session at the repo root:
     # exceptions list. So is a toolchain failure: check() probes for a compiler even with no
     # src/, so a broken one kills it in seconds with `Could not find tools necessary to
     # compile a package`. Never report a gate as passing on a check() that never ran.
-    devtools::document()                       # regenerate man/*.Rd + NAMESPACE
+    devtools::document()                       # regenerate man/*.Rd, NAMESPACE, DESCRIPTION fields
     devtools::test()                           # full testthat suite
     devtools::check(error_on = "note")         # CRAN-strict R CMD check; fails on any NOTE
     devtools::spell_check()                    # typos in DESCRIPTION/README/NEWS/man/vignettes
@@ -271,7 +271,7 @@ Then confirm:
 
 ```bash
 git diff --stat   # what's about to be staged
-git status        # any uncommitted regenerated files (man/*.Rd, NAMESPACE)?
+git status        # any uncommitted regenerated files (man/*.Rd, NAMESPACE, DESCRIPTION)?
 ```
 
 The common omission is editing roxygen comments without re-running `devtools::document()`,

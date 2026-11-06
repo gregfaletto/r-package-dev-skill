@@ -450,9 +450,9 @@ would have caught the defect that shipped.
    then run the suite there. A number in the PR body that was true two commits ago is stale
    evidence presented as current evidence.
 
-6. **`devtools::document()` is idempotent** — running it twice produces no diff. The
-   regenerated `man/*.Rd` and (if exports changed) `NAMESPACE` are staged in the same
-   commit as the source change.
+6. **`devtools::document()` is idempotent** — running it twice produces no diff. Whatever it
+   regenerated, `man/*.Rd`, `NAMESPACE` or `DESCRIPTION` (its roxygen2 version and `Collate`),
+   is staged in the same commit as the source change.
 
 7. **A PR with a user-visible change has a `NEWS.md` bullet under the development header**,
    and the version is a development version — in `DESCRIPTION`, or wherever
