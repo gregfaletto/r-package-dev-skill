@@ -550,16 +550,17 @@ package or file, and show the rewrite.
   collapsed to one and shipped). **When you see a new guardrail, ask: what transform sits
   between the raw observation and the assertion, and could it erase the signal the guard
   exists to catch?**
-- **A consolidation that silently disarms the parity test licensing it.** When the diff folds
-  N call sites onto one helper, **ask which existing assertions compared those N sites to each
-  other** — every one of them just became a tautology, and it keeps passing. The PR that
-  causes the loss is by construction the PR the guard was written to police, and the guard is
-  normally reviewed when written (when it demonstrably had power) rather than after. One
-  ten-PR campaign reduced a three-anchor guardrail from nine failures under mutation to zero
-  across nine PRs; nobody noticed for three weeks, and the file header still promised it would
-  catch drift. **Require the mutation be re-run against the post-refactor tree** — a
-  "mutation-checked" claim in a PR body is a statement about the code when the guard was
-  written. Absolute pins survive consolidation; parity assertions do not.
+- **A consolidation that silently disarms the parity test licensing it.** When the diff folds N
+  call sites onto one helper, **ask which existing assertions compared those N sites to each
+  other** — every one of them just became a tautology, and it keeps passing. The PR that causes
+  the loss is by construction the PR the guard was written to police, and the guard is normally
+  reviewed when written (when it demonstrably had power) rather than after. One ten-PR campaign
+  reduced a three-anchor guardrail from nine failures under mutation to zero across nine PRs;
+  nobody noticed for three weeks, and the file header still promised it would catch drift.
+  **Require the mutation be re-run against the post-refactor tree** — a "mutation-checked"
+  claim in a PR body is a statement about the code when the guard was written. Absolute pins
+  and a behavioral check, such as a mock that offsets the helper, survive consolidation; parity
+  assertions do not.
 - **An untested reachability claim.** "Unreachable through any public entry point" is an
   assertion about the code, usually cheap to test, and in practice wrong more often than
   right. Treat a new or newly-relied-on reachability comment as a finding unless a test pins

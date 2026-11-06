@@ -245,10 +245,11 @@ written specifically to guard a bug that the tautology could not detect.
 
 **The catalogue is `cran-gate.md` § "Fixture anti-patterns"** — you were briefed with that
 file, so read it rather than working from a summary here. It covers round-trip tautologies,
-fixtures that bypass the path under test, well-formedness-only assertions, vacuous fixtures,
-a pattern argument that is silently a regex, fixture hygiene that erases the signal, and a
-threshold on a random quantity whose null was never measured. If you were not briefed with
-that file, say so in your output instead of working from memory.
+fixtures that bypass the path under test, well-formedness-only assertions, vacuous fixtures, a
+pattern argument that is silently a regex, fixture hygiene that erases the signal, a threshold
+on a random quantity whose null was never measured, and an exact comparison between separately
+computed results. If you were not briefed with that file, say so in your output instead of
+working from memory.
 
 These live here rather than there, because they are about the assertion's plumbing rather
 than its fixture:
