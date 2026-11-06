@@ -577,9 +577,12 @@ would have caught the defect that shipped.
     **A measurement copied into a comment, a header, `NEWS.md` or the PR body has a shelf life
     of one commit.** It was taken against a tree, and any later commit on the branch can
     falsify it without touching the sentence — so the list above reconciles the copies, by
-    `grep` over the branch's touched files for the number, the assertion names and the file
-    names, rather than only re-running the command. **If two copies of a claim disagree, that
-    alone is a finding**, and cheaper to spot than checking either copy on its own.
+    `grep` over the whole tree for the number, the assertion names and the file names, rather
+    than only re-running the command. **A plan that deletes or corrects a claim in words
+    searches for its copies by meaning from the first pass,** over the whole tree, including
+    `R/` comments and roxygen, `man/`, vignettes, `NEWS.md`, `cran-comments.md` and the tests.
+    **If two copies of a claim disagree, that alone is a finding**, and cheaper to spot than
+    checking either copy on its own.
 
     **Write the measured value next to each item, not a tick.** A box you check yourself is
     unfalsifiable from the inside — it records that you intended to, which is the same

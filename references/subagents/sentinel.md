@@ -111,9 +111,11 @@ header, `NEWS.md`, the PR body. These are cheaper to check than a lone claim, be
 copies can be read against each other, and **two copies that disagree are a finding without
 measuring anything**. An external pass reported one as exactly that — a comment pair, one copy
 of which was measurably false — after both in-cycle passes read this check as code only. Find
-the copies by grepping a short, distinctive phrase from the claim: `git grep -i` over the tree,
-`man/` and `NEWS.md` included, and a plain `grep -i` over the PR body once one exists. Search
-even when your brief names the copies, since it may not name them all.
+the copies by meaning, because a copy worded differently is still a copy: grep several words a
+copy might use for the same claim, read the hits, and widen from what they show. Use
+`git grep -i` over the tree, `man/`, vignettes, `NEWS.md`, `cran-comments.md` and the tests
+included, and a plain `grep -i` over the PR body once one exists. Search even when your brief
+names the copies, since it may not name them all.
 
 **Why it matters.** The `fetwfe` PR history is littered with copy-paste fixes that had to be
 applied to sibling files one cycle at a time: a mask expression duplicated
@@ -142,11 +144,11 @@ finding, caught one stage earlier and at a fraction of the cost. Apply the same 
   copy may be intentional).
 - **2+** sibling-file occurrences → **BLOCKER** (recommend extracting a helper before
   merging; if the author argues the parallel structure is intentional, escalate).
-- **A duplicated claim**, where `grep` is the right instrument: two copies that disagree →
-  **BLOCKER**, remedied by deleting the duplicate, never by rewording either copy; two that
-  agree → **NOTE**. **In `@noRd` roxygen or an ordinary comment, grade an agreeing copy WARNING
-  rather than NOTE**: neither becomes a help page read on its own, so the remedy is deletion or
-  a pointer (`@inheritParams` for a shared argument), never a third copy.
+- **A duplicated claim:** two copies that disagree → **BLOCKER**, remedied by deleting the
+  duplicate, never by rewording either copy; two that agree → **NOTE**. **In `@noRd` roxygen or
+  an ordinary comment, grade an agreeing copy WARNING rather than NOTE**: neither becomes a
+  help page read on its own, so the remedy is deletion or a pointer (`@inheritParams` for a
+  shared argument), never a third copy.
 
 **BLOCKER example.** A new variance-formula helper duplicates the group-loop structure
 already present in an existing variance function. Flag: "lines X–Y of the new helper match
@@ -451,10 +453,9 @@ nothing — one pass emitted `CLEAR`, which is not a verdict. Use exactly one of
 
 ## Why these checks and not others
 
-Other drift classes exist. Checks 1–3 are the ones that have **historically required
-multiple PR cycles to fully unwind** — each check's **Why it matters** above is that record.
-They are also the ones you can **mechanically detect** at PR time without deep semantic
-understanding: each has a concrete rule.
+Other drift classes exist. Checks 1–3 are the ones that have **historically required multiple
+PR cycles to fully unwind** — each check's **Why it matters** above is that record. They are
+also the ones with a concrete rule to apply at PR time.
 
 **Checks 4 and 5 earn their place on a different argument: they are where this pass's decisive
 catches came from.** Measured across the post-implementation passes on record, the findings
