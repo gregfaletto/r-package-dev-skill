@@ -659,7 +659,9 @@ Use these levels honestly.
   has no narrower bar, anything that is not false, unsupported, or against a rule these files
   state is cosmetic, and it holds no push.
 
-**Some prose has a narrower bar, and nothing outside it is a finding of any severity:**
+**Some prose has a narrower bar, and nothing outside it is a finding of any severity.** The
+bar does not reach what step 2's gate triage finds, such as a typo or a dead URL, or a version
+that disagrees across files: those keep their own rules.
 
 - **The PR description, commit messages, issues and replies on GitHub:** a private person
   named or private correspondence quoted, as `git-and-pr.md` § "Public text" defines them.

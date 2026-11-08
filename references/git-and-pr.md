@@ -238,12 +238,12 @@ That's the whole body.
 **A worked example, for a substantial multi-file PR** — four behavior changes, a new test
 file, and three deferred items, in about 240 words:
 
-    Closes #440 (part A3 of four from #366; A1 shipped as #438). An out-of-range
-    seed now fails with the package's own message instead of base R's coercion
-    warning plus an opaque error, at all ten exported doors. The range rule and
-    its wording are single-sourced into two helpers in `R/utility.R` rather than
-    written inline at four sites. Separately, the four `*WithSimulatedData()`
-    wrappers drop nine `match.arg()` calls their cores already perform.
+    Closes #440, part of #366. An out-of-range seed now fails with the package's
+    own message instead of base R's coercion warning plus an opaque error, at
+    every exported door. The range rule and its wording are single-sourced into
+    helpers in `R/utility.R` rather than written inline at each site.
+    Separately, the `*WithSimulatedData()` wrappers drop the `match.arg()` calls
+    their cores already perform.
 
     Message quality only — every affected path already errored; none returned a
     wrong number. Gate clean; `url_check()` did not run (no network egress here,

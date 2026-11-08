@@ -176,9 +176,9 @@ Open § "What a comment may assert" and compare: the item must name the rules th
 states, not plausible substitutes, and each `file:line` it cites must be a line the diff
 changes that says what the item claims. A failing item is not fixed by re-running the
 implementer: it commits as it goes, so a second run has nothing to apply and reports clean.
-Spend a [narrow round](#6-review-the-implementation) instead, asking which of that section's
-rules the branch's comments and roxygen break. Hand the implementer its brief's path, never
-the rules: the receipt proves reading only while the launch prompt does not carry them.
+Read the branch's comments and roxygen against that section yourself instead, and fix what
+breaks it. Hand the implementer its brief's path, never the rules: the receipt proves reading
+only while the launch prompt does not carry them.
 
 Version bookkeeping for a user-visible change — the `NEWS.md` bullet, the version bump, the
 `inst/CITATION` update — belongs to this stage, not to stage 7; see
@@ -266,7 +266,8 @@ closed issues out of the queue doc, merged branches' `.plans/<branch>/` folders 
 
 **Before pushing, get the draft reviewed.** Spawn a fresh post-execution reviewer over the
 PR-description draft and every commit made after the last review pass. Brief it with the draft,
-the range of those commits, and one question: does any of their text cross the bar that
+the range of those commits, and one question: does any of their text, or a copy elsewhere of
+a claim they change, cross the bar that
 [its § Severity classification](references/subagents/post-exec-reviewer.md#severity-classification)
 sets for that kind of text? Its output is the post-execution review's next `_v#`, answered as
 stage 6 answers a round. A fix to code or tests that it prompts gets the same review before

@@ -38,7 +38,7 @@ where every brief named both folders, though criterion 14's sweep reads only
 
 In SKILL.md stage 4, run the coverage-phrase grep over the implementer's commits, so that a hit
 the comment-rules item doesn't account for fails it. Set aside because the post-execution
-reviewer runs the same grep at stage 6.
+reviewer ran the same grep at stage 6, which it no longer does.
 
 - 2026-10-01, PR #493
 
