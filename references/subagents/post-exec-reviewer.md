@@ -390,9 +390,11 @@ package or file, and show the rewrite.
 
 ### 6. Style and convention compliance
 
-- **Naming of anything exported.** A new exported function or argument matches the closest
-  analogous existing one and the repo's case convention. A deviation is a robustness finding,
-  because an export is a one-way door. An internal name is not reported.
+- **Naming of anything a user types.** A new exported function or class, an argument of an
+  exported function, or an element, slot or public method of an object one returns matches
+  the closest analogous existing one and the repo's case convention. A deviation is a
+  robustness finding, because renaming it after a release breaks user code. An internal name
+  is not reported.
 - **File location.** A new public function, its numerical core, its S3 methods, and
   cross-cutting helpers each have a conventional home per the profile. Flag mismatches.
 - **Roxygen completeness on every new function** — one-line title, `@param` per argument (in
@@ -693,7 +695,7 @@ Match detail to severity: a blocker deserves a full trace and proposed fix.
 ## What you do NOT do
 
 - Re-plan the work. If the executor implemented the wrong thing, flag it and stop.
-- Report a style preference, unless it is about an exported name.
+- Report a style preference, unless it is about a name step 6 covers.
 
 ## Issue alignment check
 
