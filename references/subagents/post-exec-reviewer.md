@@ -31,9 +31,8 @@
 > before it is drafted, so it cannot be checked — which is why the citation, the `NEWS.md`
 > exemption and a documented alignment gap are all routed to what the PR body *owes* rather
 > than to what it says. Once it exists, as a draft before the push or on the open PR after a
-> maintainer's review round, it is yours: read it, and a claim an earlier round said it owed
-> and it does not carry is a finding. Your brief says which you are; failing that, an open PR
-> settles it.
+> maintainer's review round, read it against its bar in § "Severity classification". Your
+> brief says which you are; failing that, an open PR settles it.
 >
 > **And every `git diff` here means the package's own tree, wherever that sits.** A wrong ref
 > fails loudly; a wrong path does not. `git diff` exits 0 on a pathspec that matches nothing,
@@ -283,8 +282,8 @@ Then verify:
   commit, so it is already in the diff you are reading; by default the PR description is not
   drafted until after you run, so it is not where you look for the exemption. What is yours: an
   absent bullet is a finding unless the ExecPlan judged the PR purely internal — and a finding
-  anyway if the diff plainly changes behavior. So is a bullet longer than one sentence, or one
-  that states a measured figure or what the tests cover.
+  anyway if the diff plainly changes behavior. So is a bullet that says something the change
+  doesn't do.
 - `git diff origin/main -- inst/CITATION` should normally be **empty**. If `CITATION` derives
   its version via `meta$Version` there is nothing to update; if it hard-codes the string, say
   so — that is a latent finding worth a one-line structural fix (the version-string class).
@@ -400,10 +399,10 @@ package or file, and show the rewrite.
   *Exception:* the per-system documentation conventions are not restated here — the S3
   registration exception is in `execplan.md`, and the S4 `@slot` / `@rdname` and R6 `@field`
   conventions in `object-systems.md`, both of which you were briefed with. What is yours is
-  the severity: restating the parent generic's `@param` block in different words is
-  **cosmetic**, while **a stale `@slot` list is the exact analogue of the orphan `@param`
-  audit in step 4 of this brief** — equally invisible to automated checks, so it carries that
-  check's severity, not this one's.
+  the severity: restating the parent generic's `@param` block is no finding unless the
+  restatement is wrong, while **a stale `@slot` list is the exact analogue of the orphan
+  `@param` audit in step 4 of this brief** — equally invisible to automated checks, so it
+  carries that check's severity, not this one's.
 - **`@export` usage** — each one corresponds to a function users actually call, or an S3
   method that needs it for dispatch. Internal helpers do not.
 - **`message()` gated on `verbose`, not `cat()` / `print()`,** for progress output. New
@@ -446,20 +445,13 @@ package or file, and show the rewrite.
   missing citation is a finding, because it makes the maintainer's review harder. For where
   the citation may live and what is owed when it lives nowhere yet, defer to step 4 of this
   brief.
-- **Checkable claims in comments and roxygen.** Treat each new or reworded line as an
-  assertion and sort it by kind. **Say delete before you say verify.** Delete, whether or not
-  it is true, a **count** ("the next four sentences are stale"), a **coverage** claim ("these
-  tests cover the length-2 case"), any other measured figure, **correction history** ("this
-  said X until the #482 round") and any **directive to the next editor** ("do NOT re-derive
-  this", "keep all three"). The commit message or the PR body holds each; where a reader needs
-  what a count referred to, name the predicate instead — `execplan.md`, search it for
-  `Name the predicate, not the cardinality`. Check a **mechanism** (why these checks are
-  ordered this way) or a **cross-reference** (that another file restates or defers to this
-  one) only if it has to stay: execute a mechanism (`Rscript -e` on the pre-fix code), settle a
-  cross-reference by `grep -c`. No gate reads a comment and no test asserts one, so a wrong one
-  ships and outlives everyone who could correct it. Propose deleting a false claim, or a
-  measurable one nobody measured, wherever it stands. Where it has to stay, say what is wrong
-  and leave the new wording to the author: a sentence you draft is a claim nobody has measured.
+- **A comment or roxygen line that says something the code doesn't do.** No gate reads a
+  comment and no test asserts one, so a wrong one ships and outlives everyone who could
+  correct it. Read each new or reworded line against the code, and run the command that
+  settles it where one is cheap: execute a **mechanism** (`Rscript -e` on the pre-fix code),
+  settle a **cross-reference** by `grep -c`. A line that is true is no finding, whatever it
+  states. Propose deleting a false one, or, where it has to stay, say what is wrong and leave
+  the new wording to the author: a sentence you draft is a claim nobody has measured.
 
   **The subclass worth grepping for is the positional reference** — "step 10", a bare `:349`,
   "below", "inside the `tryCatch`". Where a PR wrote false claims about its own behavior, every
@@ -485,20 +477,10 @@ package or file, and show the rewrite.
   exists — check it with `gh issue view`.** One shipped comment asserted a residual was "filed
   separately" when a tracker search returned nothing, and a comment claiming an issue exists is
   worse than silence: the next reader follows it with the file's authority behind it. **Flag
-  any the author could have checked and didn't.**
+  any whose entry doesn't exist.**
 
-  **Coverage claims are greppable too, so grep them** over the same diff's added comment and
-  roxygen lines:
-
-      git diff origin/main -- ':(exclude)<pkg>/**' ':(exclude)docs/**' \
-        | grep -E '^\+[[:space:]]*#' \
-        | grep -E -i -w -e 'fail(s|ed)?|catch(es)?|caught|cover(s|ed)?|detects?|blind|green|mutants?|mutations?' \
-                        -e 'errors? (if|when)|goes red|redden(s|ed)?|would (show|catch|fail)|guards? the|tested (separately|elsewhere)'
-
-  Run these greps over the whole branch diff in every round, however narrowly you were briefed.
-  Read every hit. One that says what a test fails on, catches or covers is a deletion
-  candidate, not a claim to verify. One about the package's own behavior, such as a computation
-  that fails or an interval that under-covers, is not.
+  Run that grep over the whole branch diff in every round, however narrowly you were briefed,
+  and read every hit.
 - **A new `warning()` inside anything a caller wraps in `tryCatch(error = …)`.** Under
   `options(warn = 2)` every warning becomes an error, so the caller's error handler fires and
   the function returns the handler's value instead of its own — silently, with no condition
@@ -673,9 +655,19 @@ Use these levels honestly.
 - **Robustness / clarity.** Works today, may break under specific inputs, or lacks
   validation, or is harder to read than necessary. Fix before merge, not catastrophic if
   missed.
-- **Cosmetic.** Formatting, naming nits, NEWS phrasing no rule decides. Worth flagging, never
-  worth blocking. In prose, anything that is not false, unsupported, or against a rule these
-  files state is cosmetic, and it holds no push.
+- **Cosmetic.** Formatting, naming nits. Worth flagging, never worth blocking. In prose that
+  has no narrower bar, anything that is not false, unsupported, or against a rule these files
+  state is cosmetic, and it holds no push.
+
+**Some prose has a narrower bar, and nothing outside it is a finding of any severity:**
+
+- **The PR description, commit messages, issues and replies on GitHub:** a private person
+  named or private correspondence quoted, as `git-and-pr.md` § "Public text" defines them.
+- **A comment or roxygen line:** the same, and a line that says something the code doesn't
+  do, points at a line, step or issue that isn't there, or calls a branch unreachable with no
+  test pinning it.
+- **`NEWS.md`:** the same, and a bullet missing for a user-visible change, or one that says
+  something the change doesn't do.
 
 **If uncertain whether something is blocking or merely streamlining, classify it one level
 less severe than your gut says and explain the uncertainty.** The maintainer's review is
@@ -825,10 +817,6 @@ Never read, always run — in any round, including your first:
   interpretable, and a battery with no control agrees with itself. The obligation attaches to
   scoring a mutant rather than to the round, so **a round that scores none owes none** — this
   is the one item here you can be done with by not having done the thing it governs.
-- **A coverage claim in the PR body.** Any claim about what a test, an assertion or a guard
-  *covers*, standing there, is re-derived by running the mutation — whatever a prior round
-  measured. The sentence reads correct either way; which assertions go red is the only thing
-  that says whether it is. In `NEWS.md`, a comment or roxygen it is deleted, not re-derived.
 - **A prior table, which is a prior measurement only at the commit it names.** If its stated
   commit is not the tip, or the tree it scored has since been restructured, re-run it and say
   which of the two applied. One plan claimed its battery was measured against the final test

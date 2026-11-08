@@ -176,6 +176,10 @@ history, so a slip needs both.
   gate output or review history unless asked.
 - **One test decides what stays in a NEWS line, a commit message or a PR reply:** would the
   reader act differently without this sentence? If not, leave it out.
+- **Make no claim the reader doesn't need,** in an issue, a PR body, a reply, a commit message
+  or a NEWS line. A count, an absolute such as "all", "none" or "only", a list offered as
+  complete, and a piece of history can each be wrong, so use the general word when it does
+  the job: "the GitHub issues", not "the 787 issues".
 
 ## PR description style
 

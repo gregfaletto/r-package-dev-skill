@@ -759,9 +759,8 @@ with `@inheritParams`.
 
 *Exception:* S3 methods registered for another package's generic (`print.foo`,
 `summary.foo`, `coef.foo`) carry only `#' @export`. The parent generic owns the
-`@param` / `@return` contract; restating it in slightly different words is a cosmetic
-finding. This applies only to method registrations, not to internal helpers that happen
-to share the file.
+`@param` / `@return` contract. This applies only to method registrations, not to internal
+helpers that happen to share the file.
 
 **Direct tests for what the plan adds.** For every function this plan adds — under `tests/`
 as well as `R/` — that no test calls directly, ask what a wrong-in-the-quiet-direction bug in

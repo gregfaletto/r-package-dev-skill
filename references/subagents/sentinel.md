@@ -107,15 +107,14 @@ class-specific slot names.
 
 **A near-duplicate *claim* counts too:** a sentence asserting what code does, what a test
 covers, or what a mutation fires, standing in two or more places — a comment, roxygen, a file
-header, `NEWS.md`, the PR body. These are cheaper to check than a lone claim, because the
-copies can be read against each other, and **two copies that disagree are a finding without
-measuring anything**. An external pass reported one as exactly that — a comment pair, one copy
+header, `NEWS.md`. These are cheaper to check than a lone claim, because the copies can be read
+against each other, and **two copies that disagree are a finding without measuring
+anything**. An external pass reported one as exactly that — a comment pair, one copy
 of which was measurably false — after both in-cycle passes read this check as code only. Find
 the copies by meaning, because a copy worded differently is still a copy: grep several words a
 copy might use for the same claim, read the hits, and widen from what they show. Use
 `git grep -i` over the tree, `man/`, vignettes, `NEWS.md`, `cran-comments.md` and the tests
-included, and a plain `grep -i` over the PR body once one exists. Search even when your brief
-names the copies, since it may not name them all.
+included. Search even when your brief names the copies, since it may not name them all.
 
 **Why it matters.** The `fetwfe` PR history is littered with copy-paste fixes that had to be
 applied to sibling files one cycle at a time: a mask expression duplicated
