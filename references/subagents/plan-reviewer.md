@@ -180,8 +180,9 @@ limit, a timeout, or a crash — and partial findings someone can read beat a cl
 header is also how a later reader tells an incomplete pass from a pass that found little.
 
 Use the same structure as the post-execution reviewer: opening verdict, blockers,
-streamlining, robustness/clarity, cosmetic, verifications performed, what you did NOT
-verify, action items in priority order.
+streamlining, robustness/clarity, verifications performed, what you did NOT verify, action
+items in priority order. Report no cosmetic items, for the reason `post-exec-reviewer.md`
+§ "Severity classification" gives.
 
 ## The loop after you
 
@@ -210,10 +211,9 @@ finding did to the plan rather than what the finding called itself — and the r
 follows is the scoped one above, not a re-read of the whole document.
 
 **Convergence:** a round with no blockers and no open streamlining or robustness findings.
-Cosmetic items go to implementation rather than triggering another round. **Two rounds is
-typical for a non-trivial plan; three or more usually means the plan needs a structural
-rethink** rather than incremental edits — say so in your verdict, so the author considers
-whether the design itself is wrong.
+**Two rounds is typical for a non-trivial plan; three or more usually means the plan needs a
+structural rethink** rather than incremental edits — say so in your verdict, so the author
+considers whether the design itself is wrong.
 
 If the author disagrees with a finding, the disagreement and counter-argument are recorded
 in the response file as a final position. You are not re-invoked just to re-litigate a

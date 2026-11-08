@@ -221,8 +221,9 @@ the plan (require the update) or made a justified deviation that should be recor
 ### 2. Run the per-PR CRAN gate and triage
 
 Run the profile's gate. First the formatter — **if it modifies any file in the executor's
-diff, that's a finding** (the executor was supposed to format before committing); note it
-as cosmetic, then work against the formatted state for the rest of the review.
+diff, that's a finding** (the executor was supposed to format before committing, and the
+formatted files still need committing); give it one line, then work against the formatted
+state for the rest of the review.
 
 Then run the gate **in the order and with the invocations `cran-gate.md` § "The per-PR CRAN
 gate" specifies** — including *why* `error_on = "note"` rather than `args = "--as-cran"`,
@@ -351,10 +352,11 @@ For every new function longer than ~10 lines:
       grep -n "@param <removed-or-renamed-param>" R/<file>.R
 
   Expected: 0 after a removal; 0 for the old name and 1 for the new after a rename.
-  Severity: cosmetic for public functions, **robustness for `@noRd` helpers** — you are the
-  only line of defense. One PR dropped a parameter from the signature, the body, and both
-  call sites and left the `#' @param` behind; the check stayed clean throughout, because
-  `@noRd` suppresses the `.Rd` that `R CMD check` would have compared against.
+  Severity: **robustness for `@noRd` helpers**, where you are the only line of defense; for
+  a public function the gate already fails on it. One PR dropped a parameter from the
+  signature, the body, and both call sites and left the `#' @param` behind; the check stayed
+  clean throughout, because `@noRd` suppresses the `.Rd` that `R CMD check` would have
+  compared against.
 
 For every new test:
 
@@ -388,8 +390,9 @@ package or file, and show the rewrite.
 
 ### 6. Style and convention compliance
 
-- **Naming.** New names match the closest analogous existing function; argument names follow
-  the repo's case convention. Flag deviations.
+- **Naming of anything exported.** A new exported function or argument matches the closest
+  analogous existing one and the repo's case convention. A deviation is a robustness finding,
+  because an export is a one-way door. An internal name is not reported.
 - **File location.** A new public function, its numerical core, its S3 methods, and
   cross-cutting helpers each have a conventional home per the profile. Flag mismatches.
 - **Roxygen completeness on every new function** — one-line title, `@param` per argument (in
@@ -619,25 +622,20 @@ stops a half-written round from being read as a complete one.
     ## 3. Robustness / clarity concerns
 
     [Missing input validation, unguarded solve(), missing spec citation, `:::` use, stale
-    Decision Log entries, missing roxygen. Lower priority than blockers, higher than
-    cosmetic.]
+    Decision Log entries, missing roxygen. Lower priority than blockers.]
 
-    ## 4. Cosmetic
-
-    [Style nits, naming nits. Optional, and none holds the push.]
-
-    ## 5. Verifications I performed
+    ## 4. Verifications I performed
 
     [Bullet list of the specific checks you ran, with commands, so this is auditable.
     Be specific: "Verified getCohortATTsFinal against §3.4 of paper_arxiv.tex by tracing
     each line of the variance formula" beats "Checked the function."]
 
-    ## 6. What I did NOT verify
+    ## 5. What I did NOT verify
 
     [Be honest about gaps. Skipped the simulation cross-check because it takes 10 minutes?
     Say so. "I did not check X" is more useful than silently omitting it.]
 
-    ## 7. Summary of action items
+    ## 6. Summary of action items
 
     [Flat numbered list of edits before merge, cross-referencing the sections above.
     End with something like: "After (N), check() should still be clean and the PR is
@@ -655,13 +653,16 @@ Use these levels honestly.
 - **Robustness / clarity.** Works today, may break under specific inputs, or lacks
   validation, or is harder to read than necessary. Fix before merge, not catastrophic if
   missed.
-- **Cosmetic.** Formatting, naming nits. Worth flagging, never worth blocking. In prose that
-  has no narrower bar, anything that is not false, unsupported, or against a rule these files
-  state is cosmetic, and it holds no push.
 
-**Some prose has a narrower bar, and nothing outside it is a finding of any severity.** The
-bar does not reach what step 2's gate triage finds, such as a typo or a dead URL, or a version
-that disagrees across files: those keep their own rules.
+**Cosmetic items are not reported.** A formatting nit, a wording choice, or a matter of taste
+in an internal name is no finding at any level. The gate runs the formatter and
+`spell_check()`, the maintainer can raise any nit in their own review, and an item in your
+file gets acted on whatever level it carries. A name on the public API is not cosmetic, and
+step 6 says how to report it.
+
+**In prose, only the following is a finding.** This does not reach what step 2's gate triage
+finds, such as a typo or a dead URL, or a version that disagrees across files: those keep
+their own rules.
 
 - **The PR description, commit messages, issues and replies on GitHub:** a private person
   named or private correspondence quoted, as `git-and-pr.md` § "Public text" defines them.
@@ -670,6 +671,8 @@ that disagrees across files: those keep their own rules.
   test pinning it.
 - **`NEWS.md`:** the same, and a bullet missing for a user-visible change, or one that says
   something the change doesn't do.
+- **Any other prose,** such as a vignette or `cran-comments.md`: the same, and anything false,
+  unsupported, or against a rule these files state.
 
 **If uncertain whether something is blocking or merely streamlining, classify it one level
 less severe than your gut says and explain the uncertainty.** The maintainer's review is
@@ -685,13 +688,12 @@ nothing. "The decision to keep `add_ridge` defaulting FALSE preserves backwards 
 existing callers; the new test for `add_ridge = TRUE` is what catches the rank-deficient
 case" carries information.
 
-Match detail to severity: a blocker deserves a full trace and proposed fix; a cosmetic
-finding deserves one line.
+Match detail to severity: a blocker deserves a full trace and proposed fix.
 
 ## What you do NOT do
 
 - Re-plan the work. If the executor implemented the wrong thing, flag it and stop.
-- Block on subjective style preferences not encoded in repo precedent or the profile.
+- Report a style preference, unless it is about an exported name.
 
 ## Issue alignment check
 
@@ -745,9 +747,9 @@ The maintainer (or the orchestrator) needs to decide whether to abort the PR.
 ## Iteration to convergence
 
 **Convergence:** a round with no blockers and no open streamlining or robustness findings.
-Cosmetic items can be deferred. **Two rounds is typical** — round 1 surfaces issues, round 2
-catches what fixing them broke. **Three or more full rounds usually means a structural
-problem** that incremental review won't catch; flag that in your verdict.
+**Two rounds is typical** — round 1 surfaces issues, round 2 catches what fixing them broke.
+**Three or more full rounds usually means a structural problem** that incremental review
+won't catch; flag that in your verdict.
 
 **Round 2 is not a rubber stamp, because applied fixes are themselves a defect source.**
 Expect a meaningful share of round 2's findings to be things round 1's fixes created: two
@@ -797,7 +799,7 @@ their keep "rather than letting the set grow by default" — the right question,
 the round that could have answered it. A set with no contract grows by default, not by
 decision.
 
-**Confirmation rounds should be short.** If round N flagged one or two cosmetic items and the
+**Confirmation rounds should be short.** If round N flagged one or two small items and the
 executor applied them, round N+1's file is long enough to state what you re-checked and what
 you found — and no longer. A confirmation round that re-reviews the whole diff is a first
 round wearing a later number.
