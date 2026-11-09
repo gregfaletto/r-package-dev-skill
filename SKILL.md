@@ -176,9 +176,9 @@ Open § "What a comment may assert" and compare: the item must name the rules th
 states, not plausible substitutes, and each `file:line` it cites must be a line the diff
 changes that says what the item claims. A failing item is not fixed by re-running the
 implementer: it commits as it goes, so a second run has nothing to apply and reports clean.
-Spend a [narrow round](#6-review-the-implementation) instead, asking which of that section's
-rules the branch's comments and roxygen break. Hand the implementer its brief's path, never
-the rules: the receipt proves reading only while the launch prompt does not carry them.
+Read the branch's comments and roxygen against that section yourself instead, and fix what
+breaks it. Hand the implementer its brief's path, never the rules: the receipt proves reading
+only while the launch prompt does not carry them.
 
 Version bookkeeping for a user-visible change — the `NEWS.md` bullet, the version bump, the
 `inst/CITATION` update — belongs to this stage, not to stage 7; see
@@ -266,10 +266,12 @@ closed issues out of the queue doc, merged branches' `.plans/<branch>/` folders 
 
 **Before pushing, get the draft reviewed.** Spawn a fresh post-execution reviewer over the
 PR-description draft and every commit made after the last review pass. Brief it with the draft,
-the range of those commits, and one question: does each claim in them that a command settles
-hold at the final commit, and do its copies elsewhere agree? Its output is the post-execution
-review's next `_v#`, answered as stage 6 answers a round, and a fix it prompts gets the same
-review before the push. Every cycle owes this pass.
+the range of those commits, and one question: does any of their text, or a copy elsewhere of
+a claim they change, cross the bar that
+[its § Severity classification](references/subagents/post-exec-reviewer.md#severity-classification)
+sets for that kind of text? Its output is the post-execution review's next `_v#`, answered as
+stage 6 answers a round. A fix to code or tests that it prompts gets the same review before
+the push, and a fix to text does not. Every cycle owes this pass.
 
 Then push and open the PR targeting `main`.
 
@@ -292,8 +294,9 @@ changes land on nearly every non-trivial PR, and the commits that answer them ar
 *after* every review pass in this cycle has already run. Work them on the same branch:
 
 - **Address the comments there** — one commit per point, and say what you did on each thread,
-  including the ones you are disagreeing with and why. Never a new branch, never a force-push
-  over what the maintainer was reading.
+  including the ones you are disagreeing with and why, in the form
+  [§ Public text](references/git-and-pr.md#public-text) gives. Never a new branch, never a
+  force-push over what the maintainer was reading.
 - **Re-run the per-PR CRAN gate.** It does not downshift here either.
 - **Re-derive every claim a command settles at the new final commit** (criterion 17).
   Everything in the PR body was measured at a commit that is no longer the tip; re-count the
@@ -407,6 +410,7 @@ issue tracker, not in a process doc.
 | **[references/subagents/post-exec-reviewer.md](references/subagents/post-exec-reviewer.md)** | Briefing the post-execution reviewer |
 | **[guides/periodic-review.md](guides/periodic-review.md)** | Running the quarterly codebase sweep — occasional, opt-in |
 | **[guides/litr.md](guides/litr.md)** | Only if the package is built from a source document rather than `R/` |
+| **[guides/blas-failures.md](guides/blas-failures.md)** | CRAN reports a failure on an alternative BLAS, or before submitting a package whose tests compare separately computed results |
 | **[references/object-systems.md](references/object-systems.md)** | Any work touching classes, methods, dispatch, or validators — S3, S4, R6, or S7 |
 | **[references/harness-notes.md](references/harness-notes.md)** | Once per session, before spawning any subagent — how your harness spawns them, the absolute-path rule, and the known harness bugs |
 | **[references/lessons.md](references/lessons.md)** | Something surprising just happened; or pre-empting known failure modes in a plan |
@@ -448,3 +452,7 @@ guessing at it is the failure.
   one is a decision to confirm with the maintainer, not a convenience.
 - **Never add to the public API "just in case."** For a CRAN package, an export is a
   one-way door.
+- **Never name a private person or quote private correspondence in public text.** Issues, PRs,
+  comments, commit messages and tracked files are public under the maintainer's name, and an
+  edit does not undo a slip. The rule is in
+  [references/git-and-pr.md](references/git-and-pr.md#public-text).

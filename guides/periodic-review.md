@@ -148,19 +148,20 @@ and a finding that predates this pass is this pass's subject, not its exemption.
 paths are the per-PR cycle's for the same reason, keyed to a branch folder this pass never
 creates, so the ones above are the paths that hold here.
 
-**The check is itself one of those writers.** `devtools::check()` regenerates `man/` and
-`NAMESPACE` before checking unless it is told not to: its `document` argument defaults to
-`NULL`, and `NULL` resolves to run the documenter whenever `DESCRIPTION`'s `RoxygenNote`
-matches the installed roxygen2 — which, on the machine whose maintainer generated that field,
-it generally does. So brief lens 3 with **the profile's § 3 invocation, with `document =
-FALSE` in it**. § 3 carries whatever else this repo's check requires, such as a package
-subdirectory; `document = FALSE` is mandatory here whether or not § 3 records it, because a
-profile that omits it is resting on a `DESCRIPTION` field and an installed version rather than
-on a decision. Left off, the regenerated files land in the tree every other lens is reading,
-the working-tree rule above sends each of them to report the delta rather than undo it, and it
-stays in the maintainer's uncommitted tree. If the check then reports documentation out of
-date, that is a finding about the tree as the maintainer left it — report it, do not
-re-document it away.
+**The check can be one of those writers.** `devtools::check()` can regenerate `man/` and
+`NAMESPACE` before checking: its `document` argument defaults to `NULL`, and `NULL` resolves to
+run the documenter whenever `DESCRIPTION`'s `RoxygenNote` matches the installed roxygen2.
+roxygen2 8.0.0 moved that field to `Config/roxygen2/version`, which devtools 2.5.2 does not
+read, so a package documented with 8.x is not re-documented, and one still on `RoxygenNote` is
+only while that roxygen2 version stays installed. So brief lens 3 with **the profile's § 3
+invocation, with `document = FALSE` in it**. § 3 carries whatever else this repo's check
+requires, such as a package subdirectory; `document = FALSE` is mandatory here whether or not
+§ 3 records it, because a profile that omits it is resting on a `DESCRIPTION` field and an
+installed version rather than on a decision. Left off, the regenerated files land in the tree
+every other lens is reading, the working-tree rule above sends each of them to report the delta
+rather than undo it, and it stays in the maintainer's uncommitted tree. If the check then
+reports documentation out of date, that is a finding about the tree as the maintainer left it —
+report it, do not re-document it away.
 
 ### Lens 1 — Core bug hunt
 

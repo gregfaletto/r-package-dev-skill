@@ -69,7 +69,7 @@ something to remember. Delete the check and you lose the reason it exists.
 
 - **2.** Underspecified issues are the norm — always clarify → the orchestrator's clarify-scope step
 - **11.** Don't `@export` internal helpers → [cran-gate.md § Export discipline](cran-gate.md#export-discipline-internal-vs-public)
-- **12.** Regenerate `NAMESPACE` and `man/` in the same commit as the roxygen change → [cran-gate.md § The per-PR CRAN gate](cran-gate.md#the-per-pr-cran-gate)
+- **12.** Regenerate everything `document()` writes in the same commit as the roxygen change → [cran-gate.md § The per-PR CRAN gate](cran-gate.md#the-per-pr-cran-gate)
 - **20.** "Accept both changes" is not always safe → [git-and-pr.md § Gotchas](git-and-pr.md#gotchas-learned-the-hard-way)
 - **21.** Commit messages with Unicode — avoid heredocs → [git-and-pr.md § Gotchas](git-and-pr.md#gotchas-learned-the-hard-way)
 - **23.** Landing a batch of parallel PRs — rebuild, never hand-merge → [git-and-pr.md § Gotchas](git-and-pr.md#gotchas-learned-the-hard-way)

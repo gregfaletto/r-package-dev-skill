@@ -72,7 +72,7 @@ Then from an R session at the repo root:
     # exceptions list. So is a toolchain failure: check() probes for a compiler even with no
     # src/, so a broken one kills it in seconds with `Could not find tools necessary to
     # compile a package`. Never report a gate as passing on a check() that never ran.
-    devtools::document()                       # regenerate man/*.Rd + NAMESPACE
+    devtools::document()                       # regenerate man/*.Rd, NAMESPACE, DESCRIPTION fields
     devtools::test()                           # full testthat suite
     devtools::check(error_on = "note")         # CRAN-strict R CMD check; fails on any NOTE
     devtools::spell_check()                    # typos in DESCRIPTION/README/NEWS/man/vignettes
@@ -271,7 +271,7 @@ Then confirm:
 
 ```bash
 git diff --stat   # what's about to be staged
-git status        # any uncommitted regenerated files (man/*.Rd, NAMESPACE)?
+git status        # any uncommitted regenerated files (man/*.Rd, NAMESPACE, DESCRIPTION)?
 ```
 
 The common omission is editing roxygen comments without re-running `devtools::document()`,
@@ -421,9 +421,10 @@ This is why CI is worth more than a longer local gate: **a green check on your m
 evidence about one platform, one R version, and one BLAS.** The following fail only elsewhere.
 
 **Numeric tolerance across BLAS implementations.** The single most common cross-platform
-failure for a statistical package. macOS links Accelerate, Linux typically OpenBLAS or
-reference BLAS, and they differ in the last few digits of any matrix decomposition. A test
-that passes locally at `expect_equal(x, y)` can fail on another platform.
+failure for a statistical package. CRAN's macOS build links R's reference BLAS unless the user
+swaps in Accelerate, Linux typically OpenBLAS or reference BLAS, and they differ in the last
+few digits of any matrix decomposition. A test that passes locally at `expect_equal(x, y)` can
+fail on another platform.
 
 - `expect_identical()` on computed doubles is **wrong** — it is exact. Use `expect_equal()`,
   which under testthat 3e compares via waldo at ~1.5e-8 (`sqrt(.Machine$double.eps)`).
@@ -433,41 +434,66 @@ that passes locally at `expect_equal(x, y)` can fail on another platform.
 - Eigenvector **signs** and the column order of decompositions are not guaranteed across
   implementations. Compare invariants (fitted values, subspaces, absolute values) rather than
   raw factors.
-- **`tolerance = 0` is right only when both sides run the *same* operations.** Two code paths
+- **`tolerance = 0` is right only when the result is exact by construction.** Two code paths
   that compute the same *quantity* by different arithmetic — `kronecker(diag(N), A) %*% y`
   versus a `T×T` block-apply — differ in the last bits by construction, and bit-identity
-  there is a property of the BLAS, not of correctness. Such a pair passed on Accelerate and
-  Windows and failed on all four Linux jobs at 1–4 ULPs. **But exactness is legitimate and
-  worth keeping when both sides run the same operations** — a consolidation-parity guardrail
-  comparing old and new implementations of one path, or a degenerate branch where a matrix is
-  exactly the identity so every cross term is exactly zero. Before writing `tolerance = 0`,
-  ask which of the two you have; before widening one, ask the same, because widening a real
-  invariant deletes a guard.
+  there is a property of the BLAS, not of correctness. Such a pair passed on macOS and Windows
+  and failed on all four Linux jobs at 1–4 ULPs. **Running the same operations is not enough
+  either:** CRAN's serial MKL check failed one function fitted twice on the same data, and
+  Intel lists
+  [array alignment](https://www.intel.com/content/www/us/en/docs/onemkl/developer-guide-windows/2025-1/obtaining-numerically-reproducible-results.html)
+  among the things that change MKL's order of operations. **Exactness is legitimate and worth
+  keeping only for** integer, logical or pass-through values that round-off cannot change, a
+  raw RNG stream, the same computation run twice when it uses no BLAS or LAPACK (`lm()` and
+  `qr()` use BLAS: LINPACK's `dqrdc2` calls it), or a degenerate branch where a matrix is
+  exactly the identity so every cross term is exactly zero. Before writing an exact comparison,
+  ask which you have; before widening one, ask the same, because widening a real invariant
+  deletes a guard. To find them, search for `identical(`, `tolerance = 0`, `==` or `!=` inside
+  `expect_true()` or `expect_false()`, and `stopifnot()`, and read each hit for a BLAS or
+  LAPACK dependency.
+- **When an exact comparison was a refactor's only guard, replace it with a behavioral
+  check.** `testthat::with_mocked_bindings()` makes the shared helper add a large offset, and
+  the callers' output must carry it. A structural check that reads the callers' code needs a
+  patch for each new shape a revert takes. The offset cannot see the helper's arguments, or
+  an `NA` it fills, so keep a value comparison beside it.
+- **CRAN's failure text can answer "would `expect_equal()` pass?".** Under edition 2, an
+  `expect_identical()` failure reading `Objects equal but not identical` means
+  `expect_equal()` at its default tolerance would have passed on that run, because both call
+  `compare()`. It is the only evidence from CRAN's own environment, and it covers that run
+  alone, so the advice above on an explicit tolerance still holds. It does not say why the two
+  differ either: `expect_identical(1, 1L)` prints it too. Edition 3 has no such line, and
+  waldo prints both values instead.
 
 **`tolerance` does not mean "relative error," and its meaning shifts with magnitude.** What
 to know before choosing one:
 
 - **Which edition is running.** No `Config/testthat/edition` field in `DESCRIPTION` means
-  **edition 2** (`all.equal`), not edition 3 (`waldo`), and they disagree: at
-  `tolerance = 1e-4`, `expect_equal(1e-3 * (1 + 1e-3), 1e-3)` **passes** under edition 2 and
-  **fails** under edition 3. The edition also changes **`expect_error`'s control flow**: on a
-  message mismatch edition 3 re-raises and aborts the rest of the `test_that` block, while
-  edition 2 records the failure and continues — so it decides red-side *counts*, not only
-  tolerances. **A scratch directory has no `DESCRIPTION`, so measuring test behavior outside
-  a package silently gives you edition 2.** Check the field before reasoning about a
+  **edition 2** (`compare()`, which starts from `all.equal`), not edition 3 (`waldo`), and they
+  disagree: at `tolerance = 1e-4`, `expect_equal(1e-3 * (1 + 1e-3), 1e-3)` **passes** under
+  edition 2 and **fails** under edition 3. The edition also changes **`expect_error`'s control
+  flow**: on a message mismatch edition 3 re-raises and aborts the rest of the `test_that`
+  block, while edition 2 records the failure and continues — so it decides red-side *counts*,
+  not only tolerances. **A scratch directory has no `DESCRIPTION`, so measuring test behavior
+  outside a package silently gives you edition 2.** Check the field before reasoning about a
   tolerance or a count, and name the edition you measured at: a correct measurement taken at
   the wrong edition refutes a correct finding, and costs a full round-trip to unpick.
 - **The relative/absolute switch.** Under both editions `expect_equal(1e-3 + 9e-3, 1e-3,
   tolerance = 1e-2)` **passes** — a 900% error at a nominal 1e-2 tolerance — because
   `all.equal` falls back to absolute difference when the expected value is small. Packages
   whose quantities are small (standard errors, elasticity-scale effects, coefficients a
-  penalty sets to zero) live in that regime by default, not as a corner case.
+  penalty sets to zero) live in that regime by default, not as a corner case. Edition 2 adds a
+  second fallback: when `all.equal` fails on a numeric vector or matrix, `compare.numeric()`
+  still passes if every element satisfies `abs(x - y) < tolerance`, so values below 1 admit
+  more than the nominal relative tolerance. That is why the edition example above passes. A
+  data frame, a list or a classed vector goes through `compare.default()`, which is
+  `all.equal` alone, so one value can pass as a scalar and fail as a data-frame column.
 
 So: **measure what the assertion actually accepts at your values** rather than reasoning
 about units. Perturb the expected value until it fails, and record the band. Note that
 `all.equal.numeric` defaults to `countEQ = FALSE`, which averages over only the *differing*
 entries — so a single bad element is not diluted across the vector, and the effective guard
-is tighter than a naive reading suggests.
+is tighter than a naive reading suggests. Edition 2's elementwise fallback undoes that for
+values below 1.
 
 **Locale-dependent ordering.** `sort()` and `order()` on character vectors follow the
 collation locale: `C` and `en_US.UTF-8` order case differently, so a test asserting a
@@ -513,7 +539,7 @@ Say so, once, as a suggestion — not as work you fold into the current PR. For 
 with numerically-sensitive tests, `usethis::use_github_action("check-standard")` is the
 cheapest available defense. Know what it actually covers — **five jobs, not nine**:
 macOS/release, Windows/release, and Ubuntu at devel, release, and oldrel-1. So it does cover
-the BLAS axis (Accelerate vs OpenBLAS), but **oldrel and R-devel are tested on Ubuntu only** —
+the BLAS axis (macOS vs Ubuntu; no MKL), but **oldrel and R-devel are tested on Ubuntu only** —
 add rows if you need macOS-oldrel or Windows-devel. **A stock workflow also holds a lower bar
 than the local gate**: `r-lib/actions/check-r-package` defaults `error-on` to `'"warning"'`, so
 it goes green on a PR that introduces a NOTE unless the check step passes `error-on: '"note"'`.
@@ -683,6 +709,11 @@ The drift sentinel's Check 3 scans new `test_that` blocks for these:
   the cutoff until it passes.** This is the stochastic form of "prove the instrument can
   produce a negative," and it is the one anti-pattern here that a single red-green run cannot
   detect — one mutation against a random assertion is a coin flip, so repeat across seeds.
+- **An exact comparison between separately computed results.** `expect_identical()`,
+  `tolerance = 0` or `==` on two results that pass through BLAS or LAPACK can fail under
+  another BLAS, even when one function runs twice on the same data. Use a tolerance unless the
+  result is exact by construction — see
+  [§ The failure class that has no local analogue](#the-failure-class-that-has-no-local-analogue).
 
 ### Minimal hand-built fixtures
 

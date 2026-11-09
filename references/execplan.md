@@ -450,9 +450,9 @@ would have caught the defect that shipped.
    then run the suite there. A number in the PR body that was true two commits ago is stale
    evidence presented as current evidence.
 
-6. **`devtools::document()` is idempotent** — running it twice produces no diff. The
-   regenerated `man/*.Rd` and (if exports changed) `NAMESPACE` are staged in the same
-   commit as the source change.
+6. **`devtools::document()` is idempotent** — running it twice produces no diff. Whatever it
+   regenerated, `man/*.Rd`, `NAMESPACE` or `DESCRIPTION` (its roxygen2 version and `Collate`),
+   is staged in the same commit as the source change.
 
 7. **A PR with a user-visible change has a `NEWS.md` bullet under the development header**,
    and the version is a development version — in `DESCRIPTION`, or wherever
@@ -577,9 +577,12 @@ would have caught the defect that shipped.
     **A measurement copied into a comment, a header, `NEWS.md` or the PR body has a shelf life
     of one commit.** It was taken against a tree, and any later commit on the branch can
     falsify it without touching the sentence — so the list above reconciles the copies, by
-    `grep` over the branch's touched files for the number, the assertion names and the file
-    names, rather than only re-running the command. **If two copies of a claim disagree, that
-    alone is a finding**, and cheaper to spot than checking either copy on its own.
+    `grep` over the whole tree for the number, the assertion names and the file names, rather
+    than only re-running the command. **A plan that deletes or corrects a claim in words
+    searches for its copies by meaning from the first pass,** over the whole tree, including
+    `R/` comments and roxygen, `man/`, vignettes, `NEWS.md`, `cran-comments.md` and the tests.
+    **If two copies of a claim disagree, that alone is a finding**, and cheaper to spot than
+    checking either copy on its own.
 
     **Write the measured value next to each item, not a tick.** A box you check yourself is
     unfalsifiable from the inside — it records that you intended to, which is the same
@@ -756,9 +759,8 @@ with `@inheritParams`.
 
 *Exception:* S3 methods registered for another package's generic (`print.foo`,
 `summary.foo`, `coef.foo`) carry only `#' @export`. The parent generic owns the
-`@param` / `@return` contract; restating it in slightly different words is a cosmetic
-finding. This applies only to method registrations, not to internal helpers that happen
-to share the file.
+`@param` / `@return` contract. This applies only to method registrations, not to internal
+helpers that happen to share the file.
 
 **Direct tests for what the plan adds.** For every function this plan adds — under `tests/`
 as well as `R/` — that no test calls directly, ask what a wrong-in-the-quiet-direction bug in

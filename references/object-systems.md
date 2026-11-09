@@ -35,8 +35,7 @@ The default assumption elsewhere in this skill.
 
 **Export rule.** A method registered for another package's generic carries **only**
 `#' @export`; roxygen emits `S3method(generic, class)`. The parent generic owns the
-`@param` / `@return` contract — restating it in different words is a cosmetic finding.
-Internal helpers get `@keywords internal` + `@noRd`.
+`@param` / `@return` contract. Internal helpers get `@keywords internal` + `@noRd`.
 
 **Reviewer checks.**
 

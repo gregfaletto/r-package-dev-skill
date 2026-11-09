@@ -6,6 +6,7 @@
 - [While working](#while-working)
 - [When ready to submit](#when-ready-to-submit)
 - [PR description workflow](#pr-description-workflow)
+- [Public text](#public-text)
 - [PR description style](#pr-description-style)
 - [Branches and PRs are the default — always](#branches-and-prs-are-the-default--always)
 - [Gotchas learned the hard way](#gotchas-learned-the-hard-way)
@@ -57,8 +58,8 @@ the ExecPlan's `Purpose / Big Picture`. **Do not start coding without it.**
 
 **3. Commit small and often.** Each time the check is green, commit. One logical unit per
 commit; don't bundle unrelated changes. If you edited roxygen
-tags, stage the regenerated `man/*.Rd` and `NAMESPACE` in the same commit so docs and source
-stay in sync.
+tags, stage what `document()` regenerated, `DESCRIPTION` included, in the same commit so docs
+and source stay in sync.
 
 **Re-check the branch immediately before every commit:**
 
@@ -81,14 +82,14 @@ After any rebase, re-run at minimum the test suite; for non-trivial rebases, the
 check.
 
 **5. Update `NEWS.md` as part of the change, not at submission.** Every PR with a user-visible
-change adds a one-sentence, past-tense bullet naming the affected function, **under the
-existing `# <pkg> <version> (development version)` header** — not under a new version header.
-**The bullet states no measured figure and no claim about what the tests cover**: where a
-reader needs numbers, such as how far estimates moved, it points to the issue or PR that
-records them. The version in that header is load-bearing. R's news parser drops a section whose
-header carries none — `tools:::.build_news_db_from_package_NEWS_md()` on a file headed
-`# <pkg> (development version)` returns nothing — so those bullets never reach the news
-database, and in a file with no other version header `R CMD check` reports
+change adds a one-sentence, present-tense bullet saying what now happens and naming the
+affected function, **under the existing `# <pkg> <version> (development version)` header** —
+not under a new version header. **The bullet states no measured figure and no claim about what
+the tests cover**: where a reader needs numbers, such as how far estimates moved, it points to
+the issue or PR that records them. The version in that header is load-bearing. R's news parser
+drops a section whose header carries none — `tools:::.build_news_db_from_package_NEWS_md()` on
+a file headed `# <pkg> (development version)` returns nothing — so those bullets never reach
+the news database, and in a file with no other version header `R CMD check` reports
 `No news entries found`: a NOTE, and so a failed run under `error_on = "note"`. Write the
 bullet in the implementation commit, because the later stages read it there:
 `devtools::spell_check()` passes `vignettes = TRUE` to `spelling::spell_check_package()`, which
@@ -158,6 +159,28 @@ gh pr create --base main --title "Add ridge fallback for rank-deficient design" 
 Sanity-check after opening: `gh pr view <n> --json body -q .body | head -3` — it must not
 start with `# Suggested title`.
 
+## Public text
+
+Issues, PR bodies, comments, commit messages and tracked files such as `cran-comments.md` are
+public, and they carry the maintainer's name. An edit does not remove a slip: GitHub keeps each
+earlier revision of an issue or PR body readable until someone deletes it from the edit
+history, so a slip needs both.
+
+- **Name no private person.** Write "CRAN", not who at CRAN, and paraphrase correspondence
+  rather than quoting it. Repository slugs and links, the authors of a cited paper, a package's
+  authorship records (`Authors@R`, `@author`, `LICENSE` and the like), and a contributor's
+  GitHub handle credited in `NEWS.md` are not covered.
+- **In PR bodies and replies, address the maintainer as "you"**, and never name them in the
+  third person.
+- **A PR reply states what changed and in which commit, or why nothing did,** with no counts,
+  gate output or review history unless asked.
+- **One test decides what stays in a NEWS line, a commit message or a PR reply:** would the
+  reader act differently without this sentence? If not, leave it out.
+- **Make no claim the reader doesn't need,** in an issue, a PR body, a reply, a commit message
+  or a NEWS line. A count, an absolute such as "all", "none" or "only", a list offered as
+  complete, and a piece of history can each be wrong, so use the general word when it does
+  the job: "the GitHub issues", not "the 787 issues".
+
 ## PR description style
 
 The maintainer is the reviewer; a terse body that gets to the actual change is what they
@@ -215,12 +238,12 @@ That's the whole body.
 **A worked example, for a substantial multi-file PR** — four behavior changes, a new test
 file, and three deferred items, in about 240 words:
 
-    Closes #440 (part A3 of four from #366; A1 shipped as #438). An out-of-range
-    seed now fails with the package's own message instead of base R's coercion
-    warning plus an opaque error, at all ten exported doors. The range rule and
-    its wording are single-sourced into two helpers in `R/utility.R` rather than
-    written inline at four sites. Separately, the four `*WithSimulatedData()`
-    wrappers drop nine `match.arg()` calls their cores already perform.
+    Closes #440, part of #366. An out-of-range seed now fails with the package's
+    own message instead of base R's coercion warning plus an opaque error, at
+    every exported door. The range rule and its wording are single-sourced into
+    helpers in `R/utility.R` rather than written inline at each site.
+    Separately, the `*WithSimulatedData()` wrappers drop the `match.arg()` calls
+    their cores already perform.
 
     Message quality only — every affected path already errored; none returned a
     wrong number. Gate clean; `url_check()` did not run (no network egress here,

@@ -76,10 +76,10 @@ with its response, which say which existing assertions your edits must re-verify
 **If tests are failing before your changes, stop and escalate** — something is wrong with
 the branch, not the plan.
 
-**3. Apply the plan in concrete-step order.** Edit the files the plan names. Follow the
-repo's export discipline (`@export` only for public functions and S3 method registrations;
-regenerate `NAMESPACE` and `man/` in the same edit as any roxygen change) and its error
-style, verbose-output convention, and formatter.
+**3. Apply the plan in concrete-step order.** Edit the files the plan names. Follow the repo's
+export discipline (`@export` only for public functions and S3 method registrations; regenerate
+everything `document()` writes in the same edit as any roxygen change) and its error style,
+verbose-output convention, and formatter.
 
 **Version bookkeeping is yours, not a cleanup someone does after you** — the `NEWS.md` bullet
 for a user-visible change, the development version bump, and the `inst/CITATION` update. The
